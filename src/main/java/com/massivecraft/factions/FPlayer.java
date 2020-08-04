@@ -95,10 +95,6 @@ public interface FPlayer extends EconomyParticipator {
 
     void setSpyingChat(boolean chatSpying);
 
-    boolean showScoreboard();
-
-    void setShowScoreboard(boolean show);
-
     void resetFactionData(boolean doSpoutUpdate);
 
     void resetFactionData();

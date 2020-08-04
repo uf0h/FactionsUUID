@@ -9,7 +9,6 @@ import com.massivecraft.factions.event.FPlayerLeaveEvent;
 import com.massivecraft.factions.event.FactionDisbandEvent;
 import com.massivecraft.factions.integration.Econ;
 import com.massivecraft.factions.perms.PermissibleAction;
-import com.massivecraft.factions.scoreboards.FTeamWrapper;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.util.TL;
 import org.bukkit.Bukkit;
@@ -98,7 +97,6 @@ public class CmdDisband extends FCommand {
         }
 
         Factions.getInstance().removeFaction(faction.getId());
-        FTeamWrapper.applyUpdates(faction);
     }
 
     @Override

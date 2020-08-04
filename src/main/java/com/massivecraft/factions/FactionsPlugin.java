@@ -492,7 +492,6 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
 
         // Overall stats
         this.metricsLine("factions", () -> Factions.getInstance().getAllFactions().size() - 3);
-        this.metricsSimplePie("scoreboard", () -> "" + conf().scoreboard().constant().isEnabled());
 
         // Event listeners
         this.metricsDrillPie("event_listeners", () -> {

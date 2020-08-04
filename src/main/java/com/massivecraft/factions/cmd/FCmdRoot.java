@@ -91,7 +91,6 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     public CmdUnclaimall cmdUnclaimall = new CmdUnclaimall();
     public CmdVersion cmdVersion = new CmdVersion();
     public CmdWarunclaimall cmdWarunclaimall = new CmdWarunclaimall();
-    public CmdSB cmdSB = new CmdSB();
     public CmdShowInvites cmdShowInvites = new CmdShowInvites();
     public CmdAnnounce cmdAnnounce = new CmdAnnounce();
     public CmdSeeChunk cmdSeeChunk = new CmdSeeChunk();
@@ -179,7 +178,6 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
         this.addSubCommand(this.cmdUnclaimall);
         this.addSubCommand(this.cmdVersion);
         this.addSubCommand(this.cmdWarunclaimall);
-        this.addSubCommand(this.cmdSB);
         this.addSubCommand(this.cmdShowInvites);
         this.addSubCommand(this.cmdAnnounce);
         this.addSubCommand(this.cmdSeeChunk);

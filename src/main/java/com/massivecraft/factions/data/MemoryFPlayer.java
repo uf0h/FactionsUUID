@@ -24,8 +24,6 @@ import com.massivecraft.factions.landraidcontrol.PowerControl;
 import com.massivecraft.factions.perms.PermissibleAction;
 import com.massivecraft.factions.perms.Relation;
 import com.massivecraft.factions.perms.Role;
-import com.massivecraft.factions.scoreboards.FScoreboard;
-import com.massivecraft.factions.scoreboards.sidebar.FInfoSidebar;
 import com.massivecraft.factions.struct.ChatMode;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.tag.Tag;
@@ -71,7 +69,6 @@ public abstract class MemoryFPlayer implements FPlayer {
     protected String name;
     protected boolean monitorJoins;
     protected boolean spyingChat = false;
-    protected boolean showScoreboard = true;
     protected WarmUpUtil.Warmup warmup;
     protected int warmupTask;
     protected boolean isAdminBypassing = false;
@@ -639,33 +636,9 @@ public abstract class MemoryFPlayer implements FPlayer {
             showChat = FactionsPlugin.getInstance().conf().factions().enterTitles().isAlsoShowChat();
         }
 
-        if (showInfoBoard(toShow)) {
-            FScoreboard.get(this).setTemporarySidebar(new FInfoSidebar(toShow));
-            showChat = FactionsPlugin.getInstance().conf().scoreboard().info().isAlsoSendChat();
-        }
         if (showChat) {
             this.sendMessage(FactionsPlugin.getInstance().txt().parse(TL.FACTION_LEAVE.format(from.getTag(this), toShow.getTag(this))));
         }
-    }
-
-    /**
-     * Check if the scoreboard should be shown. Simple method to be used by above method.
-     *
-     * @param toShow Faction to be shown.
-     * @return true if should show, otherwise false.
-     */
-    public boolean showInfoBoard(Faction toShow) {
-        return showScoreboard && !toShow.isWarZone() && !toShow.isWilderness() && !toShow.isSafeZone() && FactionsPlugin.getInstance().conf().scoreboard().info().isEnabled() && FScoreboard.get(this) != null;
-    }
-
-    @Override
-    public boolean showScoreboard() {
-        return this.showScoreboard;
-    }
-
-    @Override
-    public void setShowScoreboard(boolean show) {
-        this.showScoreboard = show;
     }
 
     // -------------------------------
