@@ -42,6 +42,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -175,8 +176,8 @@ public abstract class MemoryFPlayer implements FPlayer {
         this.lastFrostwalkerMessage = System.currentTimeMillis();
     }
 
-    public Faction getAutoClaimFor() {
-        return autoClaimFor;
+    public Optional<Faction> getAutoClaimFor() {
+        return Optional.ofNullable(autoClaimFor);
     }
 
     public void setAutoClaimFor(Faction faction) {

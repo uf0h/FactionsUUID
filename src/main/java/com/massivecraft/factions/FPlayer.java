@@ -1,5 +1,7 @@
 package com.massivecraft.factions;
 
+import java.util.List;
+import java.util.Optional;
 import com.massivecraft.factions.iface.EconomyParticipator;
 import com.massivecraft.factions.perms.Relation;
 import com.massivecraft.factions.perms.Role;
@@ -10,32 +12,34 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
 
 /**
- * Logged in players always have exactly one FPlayer instance. Logged out players may or may not have an FPlayer
- * instance. They will always have one if they are part of a faction. This is because only players with a faction are
+ * Logged in players always have exactly one FPlayer instance. Logged out players may or may not have an
+ * FPlayer
+ * instance. They will always have one if they are part of a faction. This is because only players with a
+ * faction are
  * saved to disk (in order to not waste disk space).
  * <p/>
  * The FPlayer is linked to a minecraft player using the player name.
  * <p/>
- * The same instance is always returned for the same player. This means you can use the == operator. No .equals method
+ * The same instance is always returned for the same player. This means you can use the == operator. No
+ * .equals method
  * necessary.
  */
 
 public interface FPlayer extends EconomyParticipator {
+
     void login();
 
     void logout();
 
     Faction getFaction();
 
+    void setFaction(Faction faction);
+
     String getFactionId();
 
     boolean hasFaction();
-
-    void setFaction(Faction faction);
 
     boolean willAutoLeave();
 
@@ -61,7 +65,7 @@ public interface FPlayer extends EconomyParticipator {
 
     void setPowerBoost(double powerBoost);
 
-    Faction getAutoClaimFor();
+    Optional<Faction> getAutoClaimFor();
 
     void setAutoClaimFor(Faction faction);
 
@@ -79,17 +83,17 @@ public interface FPlayer extends EconomyParticipator {
 
     void setIsAdminBypassing(boolean val);
 
-    void setChatMode(ChatMode chatMode);
-
     ChatMode getChatMode();
 
-    void setIgnoreAllianceChat(boolean ignore);
+    void setChatMode(ChatMode chatMode);
 
     boolean isIgnoreAllianceChat();
 
-    void setSpyingChat(boolean chatSpying);
+    void setIgnoreAllianceChat(boolean ignore);
 
     boolean isSpyingChat();
+
+    void setSpyingChat(boolean chatSpying);
 
     boolean showScoreboard();
 
@@ -219,6 +223,8 @@ public interface FPlayer extends EconomyParticipator {
 
     String getId();
 
+    void setId(String id);
+
     Player getPlayer();
 
     boolean isOnline();
@@ -240,8 +246,6 @@ public interface FPlayer extends EconomyParticipator {
     void remove();
 
     boolean isOffline();
-
-    void setId(String id);
 
     boolean isFlying();
 

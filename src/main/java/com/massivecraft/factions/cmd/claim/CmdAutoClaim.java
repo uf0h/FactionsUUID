@@ -24,11 +24,13 @@ public class CmdAutoClaim extends FCommand {
     @Override
     public void perform(CommandContext context) {
         Faction forFaction = context.argAsFaction(0, context.faction);
-        if (forFaction == null || forFaction == context.fPlayer.getAutoClaimFor()) {
-            context.fPlayer.setAutoClaimFor(null);
-            context.msg(TL.COMMAND_AUTOCLAIM_DISABLED);
-            return;
-        }
+        // disable autoclaim if already enabled
+        context.fPlayer.getAutoClaimFor().ifPresent(faction -> {
+            if (forFaction == null || faction == forFaction) {
+                context.fPlayer.setAutoClaimFor(null);
+                context.msg(TL.COMMAND_AUTOCLAIM_DISABLED);
+            }
+        });
 
         if (!context.fPlayer.canClaimForFaction(forFaction)) {
             if (context.faction == forFaction) {
