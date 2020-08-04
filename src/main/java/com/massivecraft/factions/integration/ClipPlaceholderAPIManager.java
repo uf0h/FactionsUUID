@@ -35,7 +35,7 @@ public class ClipPlaceholderAPIManager extends PlaceholderExpansion implements R
 
     // Since we are registering this expansion from the dependency, this can be null
     @Override
-    public String getPlugin() {
+    public String getRequiredPlugin() {
         return null;
     }
 
