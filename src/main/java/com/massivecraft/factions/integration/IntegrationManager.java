@@ -1,7 +1,6 @@
 package com.massivecraft.factions.integration;
 
 import com.massivecraft.factions.FactionsPlugin;
-import com.massivecraft.factions.integration.dynmap.EngineDynmap;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -17,7 +16,6 @@ import java.util.logging.Level;
 
 public class IntegrationManager implements Listener {
     private enum Integration {
-        DYNMAP("dynmap", EngineDynmap.getInstance()::init),
         ESS("Essentials", Essentials::setup),
         LUCKPERMS("LuckPerms", (plugin) -> {
             String[] version = plugin.getDescription().getVersion().split("\\.");
@@ -38,29 +36,9 @@ public class IntegrationManager implements Listener {
                 }
             }
         }),
-        LWC("LWC", com.massivecraft.factions.integration.LWC::setup),
         PLACEHOLDERAPI("PlaceholderAPI", (p) -> FactionsPlugin.getInstance().setupPlaceholderAPI()),
         PLACEHOLDERAPI_OTHER("MVdWPlaceholderAPI", (p) -> FactionsPlugin.getInstance().setupOtherPlaceholderAPI()),
-        SENTINEL("Sentinel", (plugin) -> {
-            Sentinel.init(plugin);
-        }),
-        WORLDGUARD("WorldGuard", (plugin) -> {
-            FactionsPlugin f = FactionsPlugin.getInstance();
-            if (!f.conf().worldGuard().isChecking() && !f.conf().worldGuard().isBuildPriority()) {
-                return;
-            }
-
-            String version = plugin.getDescription().getVersion();
-            if (version.startsWith("6")) {
-                f.setWorldGuard(new Worldguard6(plugin));
-                f.getLogger().info("Found support for WorldGuard version " + version);
-            } else if (version.startsWith("7")) {
-                f.setWorldGuard(new Worldguard7());
-                f.getLogger().info("Found support for WorldGuard version " + version);
-            } else {
-                f.log(Level.WARNING, "Found WorldGuard but couldn't support this version: " + version);
-            }
-        });
+        WORLDGUARD("WorldGuard", Worldguard::setup);
 
         private static final Map<String, Consumer<Plugin>> STARTUP_MAP = new HashMap<>();
 

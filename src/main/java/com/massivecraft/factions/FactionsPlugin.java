@@ -13,11 +13,8 @@ import com.massivecraft.factions.event.FactionRelationEvent;
 import com.massivecraft.factions.integration.ClipPlaceholderAPIManager;
 import com.massivecraft.factions.integration.Econ;
 import com.massivecraft.factions.integration.Essentials;
-import com.massivecraft.factions.integration.IWorldguard;
 import com.massivecraft.factions.integration.IntegrationManager;
-import com.massivecraft.factions.integration.LWC;
 import com.massivecraft.factions.integration.LuckPerms;
-import com.massivecraft.factions.integration.dynmap.EngineDynmap;
 import com.massivecraft.factions.integration.permcontext.ContextManager;
 import com.massivecraft.factions.landraidcontrol.LandRaidControl;
 import com.massivecraft.factions.listeners.FactionsBlockListener;
@@ -26,9 +23,7 @@ import com.massivecraft.factions.listeners.FactionsEntityListener;
 import com.massivecraft.factions.listeners.FactionsExploitListener;
 import com.massivecraft.factions.listeners.FactionsPlayerListener;
 import com.massivecraft.factions.listeners.OneEightPlusListener;
-import com.massivecraft.factions.listeners.versionspecific.PortalHandler;
-import com.massivecraft.factions.listeners.versionspecific.PortalListenerLegacy;
-import com.massivecraft.factions.listeners.versionspecific.PortalListener_114;
+import com.massivecraft.factions.listeners.PortalListener;
 import com.massivecraft.factions.perms.Permissible;
 import com.massivecraft.factions.perms.PermissibleAction;
 import com.massivecraft.factions.perms.PermissionsMapTypeAdapter;
@@ -48,7 +43,6 @@ import com.massivecraft.factions.util.TextUtil;
 import com.massivecraft.factions.util.TitleAPI;
 import com.massivecraft.factions.util.WorldUtil;
 import com.massivecraft.factions.util.material.MaterialDb;
-import com.massivecraft.factions.util.particle.BukkitParticleProvider;
 import com.massivecraft.factions.util.particle.PacketParticleProvider;
 import com.massivecraft.factions.util.particle.ParticleProvider;
 import io.papermc.lib.PaperLib;
@@ -164,7 +158,6 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
 
     private SeeChunkUtil seeChunkUtil;
     private ParticleProvider particleProvider;
-    private IWorldguard worldguard;
     private LandRaidControl landRaidControl;
     private boolean luckPermsSetup;
     private IntegrationManager integrationManager;
@@ -366,11 +359,8 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
         startAutoLeaveTask(false);
 
         // Run before initializing listeners to handle reloads properly.
-        if (mcVersion < 1300) { // Before 1.13
-            particleProvider = new PacketParticleProvider();
-        } else {
-            particleProvider = new BukkitParticleProvider();
-        }
+        particleProvider = new PacketParticleProvider();
+
         getLogger().info(txt.parse("Using %1s as a particle provider", particleProvider.name()));
 
         if (conf().commands().seeChunk().isParticles()) {
@@ -386,16 +376,10 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
         getServer().getPluginManager().registerEvents(new FactionsEntityListener(this), this);
         getServer().getPluginManager().registerEvents(new FactionsExploitListener(this), this);
         getServer().getPluginManager().registerEvents(new FactionsBlockListener(this), this);
-        if (mcVersion >= 800) {
-            getServer().getPluginManager().registerEvents(new OneEightPlusListener(this), this);
-        }
 
-        // Version specific portal listener check.
-        if (mcVersion >= 1400) { // Starting with 1.14
-            getServer().getPluginManager().registerEvents(new PortalListener_114(this), this);
-        } else {
-            getServer().getPluginManager().registerEvents(new PortalListenerLegacy(new PortalHandler()), this);
-        }
+        getServer().getPluginManager().registerEvents(new OneEightPlusListener(this), this);
+        getServer().getPluginManager().registerEvents(new PortalListener(this), this);
+
 
         // since some other plugins execute commands directly through this command interface, provide it
         this.getCommand(refCommand).setExecutor(cmdBase);
@@ -488,18 +472,6 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
             this.metricsSimplePie("essentials_home_teleport", () -> "" + this.conf().factions().homes().isTeleportCommandEssentialsIntegration());
         }
 
-        // LWC
-        Plugin lwc = LWC.getLWC();
-        this.metricsDrillPie("lwc", () -> this.metricsPluginInfo(lwc));
-        if (lwc != null) {
-            boolean enabled = conf().lwc().isEnabled();
-            this.metricsSimplePie("lwc_integration", () -> "" + enabled);
-            if (enabled) {
-                this.metricsSimplePie("lwc_reset_locks_unclaim", () -> "" + conf().lwc().isResetLocksOnUnclaim());
-                this.metricsSimplePie("lwc_reset_locks_capture", () -> "" + conf().lwc().isResetLocksOnCapture());
-            }
-        }
-
         // Vault
         Plugin vault = Bukkit.getServer().getPluginManager().getPlugin("Vault");
         this.metricsDrillPie("vault", () -> this.metricsPluginInfo(vault));
@@ -513,22 +485,6 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
                 return map;
             });
         }
-
-        // WorldGuard
-        IWorldguard wg = this.getWorldguard();
-        String wgVersion = wg == null ? "nope" : wg.getVersion();
-        this.metricsDrillPie("worldguard", () -> this.metricsInfo(wg, () -> wgVersion));
-
-        // Dynmap
-        String dynmapVersion = EngineDynmap.getInstance().getVersion();
-        boolean dynmapEnabled = EngineDynmap.getInstance().isRunning();
-        this.metricsDrillPie("dynmap", () -> {
-            Map<String, Map<String, Integer>> map = new HashMap<>();
-            Map<String, Integer> entry = new HashMap<>();
-            entry.put(dynmapVersion == null ? "none" : dynmapVersion, 1);
-            map.put(dynmapEnabled ? "enabled" : "disabled", entry);
-            return map;
-        });
 
         // Clip Placeholder
         Plugin clipPlugin = getServer().getPluginManager().getPlugin("PlaceholderAPI");
@@ -594,9 +550,7 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
         return map;
     }
 
-    public void setWorldGuard(IWorldguard wg) {
-        this.worldguard = wg;
-    }
+
 
     public void loadLang() {
         File lang = new File(getDataFolder(), "lang.yml");
@@ -825,10 +779,6 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
 
     public LandRaidControl getLandRaidControl() {
         return this.landRaidControl;
-    }
-
-    public IWorldguard getWorldguard() {
-        return this.worldguard;
     }
 
     public void setupPlaceholderAPI() {

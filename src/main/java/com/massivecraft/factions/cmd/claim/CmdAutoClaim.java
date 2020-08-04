@@ -17,20 +17,19 @@ public class CmdAutoClaim extends FCommand {
         this.optionalArgs.put("faction", "your");
 
         this.requirements = new CommandRequirements.Builder(Permission.AUTOCLAIM)
-                .playerOnly()
-                .build();
+            .playerOnly()
+            .build();
     }
 
     @Override
     public void perform(CommandContext context) {
         Faction forFaction = context.argAsFaction(0, context.faction);
         // disable autoclaim if already enabled
-        context.fPlayer.getAutoClaimFor().ifPresent(faction -> {
-            if (forFaction == null || faction == forFaction) {
-                context.fPlayer.setAutoClaimFor(null);
-                context.msg(TL.COMMAND_AUTOCLAIM_DISABLED);
-            }
-        });
+        if (forFaction == null || forFaction == context.fPlayer.getAutoClaimFor()) {
+            context.fPlayer.setAutoClaimFor(null);
+            context.msg(TL.COMMAND_AUTOCLAIM_DISABLED);
+            return;
+        }
 
         if (!context.fPlayer.canClaimForFaction(forFaction)) {
             if (context.faction == forFaction) {

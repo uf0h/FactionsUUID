@@ -65,7 +65,7 @@ public interface FPlayer extends EconomyParticipator {
 
     void setPowerBoost(double powerBoost);
 
-    Optional<Faction> getAutoClaimFor();
+    Faction getAutoClaimFor();
 
     void setAutoClaimFor(Faction faction);
 

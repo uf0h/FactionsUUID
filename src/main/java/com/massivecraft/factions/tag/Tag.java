@@ -6,6 +6,7 @@ import com.massivecraft.factions.FactionsPlugin;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 
+@SuppressWarnings("UnstableApiUsage")
 public interface Tag {
     int ARBITRARY_LIMIT = 25000;
 

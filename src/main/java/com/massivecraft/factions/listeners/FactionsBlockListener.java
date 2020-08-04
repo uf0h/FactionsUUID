@@ -7,6 +7,7 @@ import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.config.file.MainConfig;
+import com.massivecraft.factions.integration.Worldguard;
 import com.massivecraft.factions.perms.PermissibleAction;
 import com.massivecraft.factions.perms.Relation;
 import com.massivecraft.factions.struct.Permission;
@@ -253,7 +254,7 @@ public class FactionsBlockListener implements Listener {
         Faction otherFaction = Board.getInstance().getFactionAt(loc);
 
         if (otherFaction.isWilderness()) {
-            if (conf.worldGuard().isBuildPriority() && FactionsPlugin.getInstance().getWorldguard() != null && FactionsPlugin.getInstance().getWorldguard().playerCanBuild(player, location)) {
+            if (conf.worldGuard().isBuildPriority() && Worldguard.getWorldguard() != null && Worldguard.playerCanBuild(player, location)) {
                 return true;
             }
 
@@ -267,7 +268,7 @@ public class FactionsBlockListener implements Listener {
 
             return false;
         } else if (otherFaction.isSafeZone()) {
-            if (conf.worldGuard().isBuildPriority() && FactionsPlugin.getInstance().getWorldguard() != null && FactionsPlugin.getInstance().getWorldguard().playerCanBuild(player, location)) {
+            if (conf.worldGuard().isBuildPriority() && Worldguard.getWorldguard() != null && Worldguard.playerCanBuild(player, location)) {
                 return true;
             }
 
@@ -281,7 +282,7 @@ public class FactionsBlockListener implements Listener {
 
             return false;
         } else if (otherFaction.isWarZone()) {
-            if (conf.worldGuard().isBuildPriority() && FactionsPlugin.getInstance().getWorldguard() != null && FactionsPlugin.getInstance().getWorldguard().playerCanBuild(player, location)) {
+            if (conf.worldGuard().isBuildPriority() && Worldguard.getWorldguard() != null && Worldguard.playerCanBuild(player, location)) {
                 return true;
             }
 

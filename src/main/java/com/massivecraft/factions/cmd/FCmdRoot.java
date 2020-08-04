@@ -20,7 +20,6 @@ import com.massivecraft.factions.cmd.role.CmdPromote;
 import com.massivecraft.factions.landraidcontrol.DTRControl;
 import com.massivecraft.factions.landraidcontrol.PowerControl;
 import com.massivecraft.factions.util.TL;
-import me.lucko.commodore.CommodoreProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -39,8 +38,6 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     }
 
     public CmdAutoHelp cmdAutoHelp = new CmdAutoHelp();
-
-    public BrigadierManager brigadierManager;
 
     public CmdAdmin cmdAdmin = new CmdAdmin();
     public CmdAutoClaim cmdAutoClaim = new CmdAutoClaim();
@@ -128,10 +125,6 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
         super();
 
         cmdBase = this;
-
-        if (CommodoreProvider.isSupported()) {
-            brigadierManager = new BrigadierManager();
-        }
 
         this.aliases.addAll(FactionsPlugin.getInstance().conf().getCommandBase());
         this.aliases.removeAll(Collections.<String>singletonList(null));  // remove any nulls from extra commas
@@ -246,9 +239,6 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
             this.addSubCommand(new CmdSetMaxVaults());
             this.addSubCommand(new CmdVault());
         }
-        if (CommodoreProvider.isSupported()) {
-            brigadierManager.build();
-        }
     }
 
     @Override
@@ -271,9 +261,6 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     @Override
     public void addSubCommand(FCommand subCommand) {
         super.addSubCommand(subCommand);
-        if (CommodoreProvider.isSupported()) {
-            brigadierManager.addSubCommand(subCommand);
-        }
     }
 
     @Override

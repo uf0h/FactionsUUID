@@ -308,8 +308,8 @@ public final class FactionsPlayerListener extends AbstractListener {
             me.setLastStoodAt(fLocTo);
         }
 
-        if (me.getAutoClaimFor().isPresent()) {
-            me.attemptClaim(me.getAutoClaimFor().get(), event.getTo(), true);
+        if (me.getAutoClaimFor() != null) {
+            me.attemptClaim(me.getAutoClaimFor(), event.getTo(), true);
         } else if (me.isAutoSafeClaimEnabled()) {
             if (!Permission.MANAGE_SAFE_ZONE.has(player)) {
                 me.setIsAutoSafeClaimEnabled(false);
@@ -393,12 +393,6 @@ public final class FactionsPlayerListener extends AbstractListener {
                 }
                 break;
             case HORSE:
-            case SKELETON_HORSE:
-            case ZOMBIE_HORSE:
-            case DONKEY:
-            case MULE:
-            case LLAMA:
-            case TRADER_LLAMA:
             case PIG:
             case LEASH_HITCH:
             case MINECART_CHEST:
@@ -464,13 +458,13 @@ public final class FactionsPlayerListener extends AbstractListener {
             boolean ohNo = false;
             switch (item.getType()) {
                 case ARMOR_STAND:
-                case END_CRYSTAL:
+                //case ENDER_CRYSTAL:
                 case MINECART:
-                case CHEST_MINECART:
-                case COMMAND_BLOCK_MINECART:
-                case FURNACE_MINECART:
+                case STORAGE_MINECART:
+                case COMMAND_MINECART:
+                case EXPLOSIVE_MINECART:
+                case POWERED_MINECART:
                 case HOPPER_MINECART:
-                case TNT_MINECART:
                     ohNo = true;
             }
             if (ohNo &&

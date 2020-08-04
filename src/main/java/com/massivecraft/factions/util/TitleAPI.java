@@ -74,7 +74,8 @@ public class TitleAPI {
         }
 
         if (supportsAPI) {
-            player.sendTitle(title, subtitle, fadeInTime, showTime, fadeOutTime);
+            //TODO: remove
+            // player.sendTitle(title, subtitle, fadeInTime, showTime, fadeOutTime);
             return;
         }
 

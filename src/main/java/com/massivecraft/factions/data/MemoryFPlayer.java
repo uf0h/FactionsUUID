@@ -1,5 +1,9 @@
 package com.massivecraft.factions.data;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.FPlayer;
@@ -14,7 +18,7 @@ import com.massivecraft.factions.iface.EconomyParticipator;
 import com.massivecraft.factions.iface.RelationParticipator;
 import com.massivecraft.factions.integration.Econ;
 import com.massivecraft.factions.integration.Essentials;
-import com.massivecraft.factions.integration.LWC;
+import com.massivecraft.factions.integration.Worldguard;
 import com.massivecraft.factions.landraidcontrol.DTRControl;
 import com.massivecraft.factions.landraidcontrol.PowerControl;
 import com.massivecraft.factions.perms.PermissibleAction;
@@ -39,12 +43,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
 
 
 /**
@@ -176,8 +174,8 @@ public abstract class MemoryFPlayer implements FPlayer {
         this.lastFrostwalkerMessage = System.currentTimeMillis();
     }
 
-    public Optional<Faction> getAutoClaimFor() {
-        return Optional.ofNullable(autoClaimFor);
+    public Faction getAutoClaimFor() {
+        return autoClaimFor;
     }
 
     public void setAutoClaimFor(Faction faction) {
@@ -764,7 +762,7 @@ public abstract class MemoryFPlayer implements FPlayer {
         int factionBuffer = plugin.conf().factions().claims().getBufferZone();
         int worldBuffer = plugin.conf().worldBorder().getBuffer();
 
-        if (plugin.conf().worldGuard().isChecking() && plugin.getWorldguard() != null && plugin.getWorldguard().checkForRegionsInChunk(flocation.getChunk())) {
+        if (plugin.conf().worldGuard().isChecking() && Worldguard.getWorldguard() != null && Worldguard.checkForRegionsInChunk(flocation.getChunk())) {
             // Checks for WorldGuard regions in the chunk attempting to be claimed
             denyReason = plugin.txt().parse(TL.CLAIM_PROTECTED.toString());
         } else if (plugin.conf().factions().claims().getWorldsNoClaiming().contains(flocation.getWorldName())) {
@@ -902,10 +900,6 @@ public abstract class MemoryFPlayer implements FPlayer {
         if (mustPay && currentFaction.isNormal() && currentFaction.hasLandInflation()) {
             // Give them money for over claiming.
             Econ.modifyMoney(payee, FactionsPlugin.getInstance().conf().economy().getOverclaimRewardMultiplier(), TL.CLAIM_TOOVERCLAIM.toString(), TL.CLAIM_FOROVERCLAIM.toString());
-        }
-
-        if (LWC.getEnabled() && forFaction.isNormal() && FactionsPlugin.getInstance().conf().lwc().isResetLocksOnCapture()) {
-            LWC.clearOtherLocks(flocation, this.getFaction());
         }
 
         // announce success

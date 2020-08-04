@@ -136,13 +136,11 @@ public abstract class AbstractListener implements Listener {
                         case WATER:
                         case LAVA:
                         case OBSIDIAN:
-                        case NETHER_PORTAL:
-                        case ENCHANTING_TABLE:
+                        case PORTAL:
+                        case ENCHANTMENT_TABLE:
                         case ANVIL:
-                        case CHIPPED_ANVIL:
-                        case DAMAGED_ANVIL:
-                        case END_PORTAL:
-                        case END_PORTAL_FRAME:
+                        case ENDER_PORTAL:
+                        case ENDER_PORTAL_FRAME:
                         case ENDER_CHEST:
                             continue;
                     }
@@ -240,12 +238,7 @@ public abstract class AbstractListener implements Listener {
                 action = PermissibleAction.LEVER;
                 break;
             case STONE_BUTTON:
-            case BIRCH_BUTTON:
-            case ACACIA_BUTTON:
-            case DARK_OAK_BUTTON:
-            case JUNGLE_BUTTON:
-            case OAK_BUTTON:
-            case SPRUCE_BUTTON:
+            case WOOD_BUTTON:
                 action = PermissibleAction.BUTTON;
                 break;
             case DARK_OAK_DOOR:
@@ -254,45 +247,29 @@ public abstract class AbstractListener implements Listener {
             case IRON_DOOR:
             case JUNGLE_DOOR:
             case SPRUCE_DOOR:
-            case ACACIA_TRAPDOOR:
-            case OAK_DOOR:
-            case BIRCH_TRAPDOOR:
-            case DARK_OAK_TRAPDOOR:
             case IRON_TRAPDOOR:
-            case JUNGLE_TRAPDOOR:
-            case OAK_TRAPDOOR:
-            case SPRUCE_TRAPDOOR:
+            case TRAP_DOOR:
+            case WOODEN_DOOR: // TODO: check all perms again
                 action = PermissibleAction.DOOR;
                 break;
             case CHEST:
             case ENDER_CHEST:
             case TRAPPED_CHEST:
-            case BARREL:
             case FURNACE:
             case DROPPER:
             case DISPENSER:
             case HOPPER:
-            case BLAST_FURNACE:
             case CAULDRON:
-            case CAMPFIRE:
             case BREWING_STAND:
-            case CARTOGRAPHY_TABLE:
-            case GRINDSTONE:
-            case SMOKER:
-            case STONECUTTER:
-            case LECTERN:
             case ITEM_FRAME:
             case JUKEBOX:
             case ARMOR_STAND:
-            case REPEATER:
-            case ENCHANTING_TABLE:
-            case FARMLAND:
+            case DIODE:
+            case ENCHANTMENT_TABLE:
+            case SOIL:
             case BEACON:
             case ANVIL:
-            case CHIPPED_ANVIL:
-            case DAMAGED_ANVIL:
             case FLOWER_POT:
-            case BEE_NEST:
                 action = PermissibleAction.CONTAINER;
                 break;
             default:
@@ -375,7 +352,7 @@ public abstract class AbstractListener implements Listener {
             case ACACIA_DOOR:
             case BIRCH_DOOR:
             case JUNGLE_DOOR:
-            case OAK_DOOR:
+            case WOODEN_DOOR:
             case SPRUCE_DOOR:
             case IRON_DOOR:
                 return true;

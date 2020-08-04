@@ -3,15 +3,11 @@ package com.massivecraft.factions.cmd;
 import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.util.TL;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.kitteh.pastegg.PasteBuilder;
-import org.kitteh.pastegg.PasteContent;
-import org.kitteh.pastegg.PasteFile;
-import org.kitteh.pastegg.Visibility;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -67,7 +63,7 @@ public class CmdDebug extends FCommand {
             permInfo.append('\n');
         }
 
-        new BukkitRunnable() {
+        /*new BukkitRunnable() {
             private final PasteBuilder builder = new PasteBuilder().name("FactionsUUID Debug")
                     .visibility(Visibility.UNLISTED)
                     .expires(ZonedDateTime.now(ZoneOffset.UTC).plusDays(3));
@@ -128,7 +124,7 @@ public class CmdDebug extends FCommand {
                     }.runTask(FactionsPlugin.getInstance());
                 }
             }
-        }.runTaskAsynchronously(FactionsPlugin.getInstance());
+        }.runTaskAsynchronously(FactionsPlugin.getInstance());*/
         context.msg(TL.COMMAND_DEBUG_RUNNING);
     }
 
