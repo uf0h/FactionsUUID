@@ -413,6 +413,14 @@ public final class FactionsPlayerListener extends AbstractListener {
             return;
         }
 
+        // prevent pearling within block placement distance
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK &&
+            event.getPlayer().getItemInHand().getType() == Material.ENDER_PEARL) {
+
+            event.setCancelled(true);
+            return;
+        }
+
         // only need to check right-clicks and physical as of MC 1.4+; good performance boost
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.PHYSICAL) {
             return;
@@ -458,7 +466,7 @@ public final class FactionsPlayerListener extends AbstractListener {
             boolean ohNo = false;
             switch (item.getType()) {
                 case ARMOR_STAND:
-                //case ENDER_CRYSTAL:
+                    //case ENDER_CRYSTAL:
                 case MINECART:
                 case STORAGE_MINECART:
                 case COMMAND_MINECART:
