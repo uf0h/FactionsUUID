@@ -42,7 +42,6 @@ import com.massivecraft.factions.util.TL;
 import com.massivecraft.factions.util.TextUtil;
 import com.massivecraft.factions.util.TitleAPI;
 import com.massivecraft.factions.util.WorldUtil;
-import com.massivecraft.factions.util.material.MaterialDb;
 import com.massivecraft.factions.util.particle.PacketParticleProvider;
 import com.massivecraft.factions.util.particle.ParticleProvider;
 import io.papermc.lib.PaperLib;
@@ -288,9 +287,6 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
         if (!dataFolder.exists()) {
             dataFolder.mkdir();
         }
-
-        // Load Material database
-        MaterialDb.load();
 
         // Create Utility Instances
         this.permUtil = new PermUtil(this);

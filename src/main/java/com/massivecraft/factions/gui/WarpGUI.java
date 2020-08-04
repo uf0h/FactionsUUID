@@ -7,9 +7,9 @@ import com.massivecraft.factions.integration.Econ;
 import com.massivecraft.factions.perms.PermissibleAction;
 import com.massivecraft.factions.util.TL;
 import com.massivecraft.factions.util.WarmUpUtil;
-import com.massivecraft.factions.util.material.MaterialDb;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
+import org.bukkit.Material;
 import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.conversations.ConversationAbandonedListener;
 import org.bukkit.conversations.ConversationContext;
@@ -34,11 +34,11 @@ public class WarpGUI extends GUI<Integer> {
     static {
         warpItem = SimpleItem.builder()
                 .setName("&8[&7{warp}&8]")
-                .setMaterial(MaterialDb.get("LIME_STAINED_GLASS"))
+                .setMaterial(Material.STAINED_GLASS_PANE) // lime
                 .setColor(DyeColor.LIME)
                 .build();
         passwordModifier = SimpleItem.builder()
-                .setMaterial(MaterialDb.get("BLACK_STAINED_GLASS"))
+                .setMaterial(Material.STAINED_GLASS_PANE) // black
                 .setColor(DyeColor.BLACK)
                 .setLore(Collections.singletonList("&8Password Protected"))
                 .build();
@@ -168,10 +168,10 @@ public class WarpGUI extends GUI<Integer> {
     @Override
     protected SimpleItem getItem(Integer index) {
         if (index == -1) {
-            return SimpleItem.builder().setName(TL.GUI_BUTTON_NEXT.toString()).setMaterial(MaterialDb.get("ARROW")).build();
+            return SimpleItem.builder().setName(TL.GUI_BUTTON_NEXT.toString()).setMaterial(Material.ARROW).build();
         }
         if (index == -2) {
-            return SimpleItem.builder().setName(TL.GUI_BUTTON_PREV.toString()).setMaterial(MaterialDb.get("ARROW")).build();
+            return SimpleItem.builder().setName(TL.GUI_BUTTON_PREV.toString()).setMaterial(Material.ARROW).build();
         }
         SimpleItem item = new SimpleItem(warpItem);
         if (faction.hasWarpPassword(warps.get(index))) {

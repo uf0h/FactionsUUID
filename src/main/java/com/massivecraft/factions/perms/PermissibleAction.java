@@ -2,7 +2,6 @@ package com.massivecraft.factions.perms;
 
 import com.massivecraft.factions.config.file.DefaultPermissionsConfig;
 import com.massivecraft.factions.util.TL;
-import com.massivecraft.factions.util.material.MaterialDb;
 import org.bukkit.Material;
 
 import java.util.HashMap;
@@ -88,7 +87,10 @@ public enum PermissibleAction {
 
     public Material getMaterial() {
         if (this.material == null) {
-            this.material = MaterialDb.get(this.materialName, Material.STONE);
+            this.material = Material.getMaterial(this.materialName);
+            if (this.material == null) {
+                this.material = Material.STONE;
+            }
         }
         return this.material;
     }

@@ -6,7 +6,7 @@ import com.massivecraft.factions.perms.Permissible;
 import com.massivecraft.factions.perms.Relation;
 import com.massivecraft.factions.perms.Role;
 import com.massivecraft.factions.util.TL;
-import com.massivecraft.factions.util.material.MaterialDb;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 
 import java.util.Collections;
@@ -16,7 +16,8 @@ import java.util.Map;
 
 public class PermissibleRelationGUI extends GUI<Permissible> {
     private static final Map<Permissible, SimpleItem> items;
-    public static SimpleItem offlineSwitch = SimpleItem.builder().setName(TL.GUI_PERMS_TOGGLE.toString()).setMaterial(MaterialDb.get("LEVER")).build();
+    public static SimpleItem offlineSwitch = SimpleItem.builder().setName(TL.GUI_PERMS_TOGGLE.toString())
+        .setMaterial(Material.LEVER).build();
 
     static {
         items = new LinkedHashMap<>();
@@ -24,42 +25,42 @@ public class PermissibleRelationGUI extends GUI<Permissible> {
 
         SimpleItem recruit = starter.build();
         recruit.setName(Role.RECRUIT.getTranslation().toString());
-        recruit.setMaterial(MaterialDb.get("WOODEN_SWORD"));
+        recruit.setMaterial(Material.WOOD_SWORD);
         items.put(Role.RECRUIT, recruit);
 
         SimpleItem normal = starter.build();
         normal.setName(Role.NORMAL.getTranslation().toString());
-        normal.setMaterial(MaterialDb.get("STONE_SWORD"));
+        normal.setMaterial(Material.STONE_SWORD);
         items.put(Role.NORMAL, normal);
 
         SimpleItem moderator = starter.build();
         moderator.setName(Role.MODERATOR.getTranslation().toString());
-        moderator.setMaterial(MaterialDb.get("IRON_SWORD"));
+        moderator.setMaterial(Material.IRON_SWORD);
         items.put(Role.MODERATOR, moderator);
 
         SimpleItem coleader = starter.build();
         coleader.setName(Role.COLEADER.getTranslation().toString());
-        coleader.setMaterial(MaterialDb.get("DIAMOND_SWORD"));
+        coleader.setMaterial(Material.DIAMOND_SWORD);
         items.put(Role.COLEADER, coleader);
 
         SimpleItem ally = starter.build();
         ally.setName(Relation.ALLY.getTranslation());
-        ally.setMaterial(MaterialDb.get("GOLD_SWORD"));
+        ally.setMaterial(Material.GOLD_SWORD);
         items.put(Relation.ALLY, ally);
 
         SimpleItem truce = starter.build();
         truce.setName(Relation.TRUCE.getTranslation());
-        truce.setMaterial(MaterialDb.get("IRON_AXE"));
+        truce.setMaterial(Material.IRON_AXE);
         items.put(Relation.TRUCE, truce);
 
         SimpleItem neutral = starter.build();
         neutral.setName(Relation.NEUTRAL.getTranslation());
-        neutral.setMaterial(MaterialDb.get("STONE_HOE"));
+        neutral.setMaterial(Material.STONE_HOE);
         items.put(Relation.NEUTRAL, neutral);
 
         SimpleItem enemy = starter.build();
         enemy.setName(Relation.ENEMY.getTranslation());
-        enemy.setMaterial(MaterialDb.get("STONE_AXE"));
+        enemy.setMaterial(Material.STONE_AXE);
         items.put(Relation.ENEMY, enemy);
     }
 

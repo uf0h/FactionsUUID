@@ -3,7 +3,6 @@ package com.massivecraft.factions.util;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.perms.Role;
-import com.massivecraft.factions.util.material.MaterialDb;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -37,7 +36,7 @@ public class MiscUtil {
         MATERIAL_FUNCTION = (string) -> {
             Material mat = null;
             if (string != null) {
-                mat = MaterialDb.get(string, null);
+                mat = Material.getMaterial(string);
             }
             return mat;
         };
