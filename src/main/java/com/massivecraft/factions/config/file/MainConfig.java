@@ -2361,24 +2361,6 @@ public class MainConfig {
         }
     }
 
-    public class LWC {
-        private boolean enabled = true;
-        private boolean resetLocksOnUnclaim = false;
-        private boolean resetLocksOnCapture = false;
-
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public boolean isResetLocksOnUnclaim() {
-            return resetLocksOnUnclaim;
-        }
-
-        public boolean isResetLocksOnCapture() {
-            return resetLocksOnCapture;
-        }
-    }
-
     public class Paper {
         @Comment("Utilize Paper's async teleportation if available (Paper 1.9+).")
         private boolean asyncTeleport = true;
@@ -2458,11 +2440,6 @@ public class MainConfig {
     @Comment("Data storage settings")
     private Data data = new Data();
     private RestrictWorlds restrictWorlds = new RestrictWorlds();
-    @Comment("LWC integration\n" +
-            "This support targets the modern fork of LWC, called LWC Extended.\n" +
-            "You can find it here: https://www.spigotmc.org/resources/lwc-extended.69551/\n" +
-            "Note: Modern LWC is no longer supported, and its former maintainer now runs LWC Extended")
-    private LWC lwc = new LWC();
     @Comment("Paper features, when accessible.")
     private Paper paper = new Paper();
     @Comment("PlayerVaults faction vault settings.\n" +
@@ -2523,10 +2500,6 @@ public class MainConfig {
 
     public WorldGuard worldGuard() {
         return worldGuard;
-    }
-
-    public LWC lwc() {
-        return lwc;
     }
 
     public WorldBorder worldBorder() {

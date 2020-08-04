@@ -344,12 +344,6 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
             getLogger().warning("Notice: GroupManager died in 2014. We suggest using LuckPerms instead. https://luckperms.net/");
             getLogger().info(" ");
         }
-        Plugin lwc = getServer().getPluginManager().getPlugin("LWC");
-        if (lwc != null && lwc.getDescription().getWebsite() != null && !lwc.getDescription().getWebsite().contains("extended")) {
-            getLogger().info(" ");
-            getLogger().warning("Notice: LWC Extended is the updated, and best supported, continuation of LWC. https://www.spigotmc.org/resources/lwc-extended.69551/");
-            getLogger().info(" ");
-        }
 
         // start up task which runs the autoLeaveAfterDaysOfInactivity routine
         startAutoLeaveTask(false);
