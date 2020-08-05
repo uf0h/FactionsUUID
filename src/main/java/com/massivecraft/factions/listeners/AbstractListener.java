@@ -2,7 +2,7 @@ package com.massivecraft.factions.listeners;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.ListIterator;
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.FPlayer;
@@ -106,10 +106,23 @@ public abstract class AbstractListener implements Listener {
             return;
         }
 
-        final List<Chunk> chunks =
-            blockList.stream().map(Block::getChunk).distinct().collect(Collectors.toList());
-        if (chunks.removeIf(chunk -> explosionDisallowed(boomer, new FLocation(chunk)))) {
-            blockList.removeIf(block -> !chunks.contains(block.getChunk()));
+        // tnt can only destroy blocks in at most 4 chunks with default explosion radii
+        final List<Chunk> disallowedChunks = new ArrayList<>(4);
+
+        final ListIterator<Block> blockListIterator = blockList.listIterator();
+        while (blockListIterator.hasNext()) {
+            final Chunk chunk = blockListIterator.next().getChunk();
+            // if chunk has already been checked remove block
+            if (disallowedChunks.contains(chunk)) {
+                blockListIterator.remove();
+            }
+            // check if explosion is allowed in chunk
+            else {
+                if (explosionDisallowed(boomer, new FLocation(chunk))) {
+                    disallowedChunks.add(chunk);
+                    blockListIterator.remove();
+                }
+            }
         }
 
         if ((boomer instanceof TNTPrimed || boomer instanceof ExplosiveMinecart) && FactionsPlugin
@@ -121,13 +134,14 @@ public abstract class AbstractListener implements Listener {
             final Block center = loc.getBlock();
             if (center.isLiquid()) {
                 // a single surrounding block in all 6 directions is broken if the material is weak enough
-                final List<Block> targets = new ArrayList<>(6);
-                targets.add(center.getRelative(0, 0, 1));
-                targets.add(center.getRelative(0, 0, -1));
-                targets.add(center.getRelative(0, 1, 0));
-                targets.add(center.getRelative(0, -1, 0));
-                targets.add(center.getRelative(1, 0, 0));
-                targets.add(center.getRelative(-1, 0, 0));
+                final Block[] targets = new Block[6];
+                targets[0] = center.getRelative(0, 0, 1);
+                targets[1] = center.getRelative(0, 0, 1);
+                targets[2] = center.getRelative(0, 1, 0);
+                targets[3] = center.getRelative(0, -1, 0);
+                targets[4] = center.getRelative(1, 0, 0);
+                targets[5] = center.getRelative(-1, 0, 0);
+
                 for (final Block target : targets) {
                     // TODO get resistance value via NMS for future-proofing
                     switch (target.getType()) {
