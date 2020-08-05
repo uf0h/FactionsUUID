@@ -4,7 +4,6 @@ import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.config.file.DefaultOfflinePermissionsConfig;
 import com.massivecraft.factions.config.file.DefaultPermissionsConfig;
 import com.massivecraft.factions.config.file.MainConfig;
-import com.massivecraft.factions.config.transition.Transitioner;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -20,7 +19,6 @@ public class ConfigManager {
     }
 
     public void startup() {
-        Transitioner.transition(this.plugin);
         this.loadConfigs();
     }
 
