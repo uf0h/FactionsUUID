@@ -11,34 +11,37 @@ import com.massivecraft.factions.util.TL;
 
 public class CmdDTRModify extends FCommand {
 
-    public CmdDTRModify() {
-        super();
-        this.aliases.add("modify");
-        this.requiredArgs.add("faction");
-        this.requiredArgs.add("amount");
+  public CmdDTRModify() {
+    super();
+    this.aliases.add("modify");
+    this.requiredArgs.add("faction");
+    this.requiredArgs.add("amount");
 
-        this.requirements = new CommandRequirements.Builder(Permission.MODIFY_DTR).build();
+    this.requirements = new CommandRequirements.Builder(Permission.MODIFY_DTR).build();
+  }
+
+  @Override
+  public void perform(CommandContext context) {
+    Faction target = context.argAsFaction(0, null);
+    if (target == null) {
+      return;
     }
 
-    @Override
-    public void perform(CommandContext context) {
-        Faction target = context.argAsFaction(0, null);
-        if (target == null) {
-            return;
-        }
-
-        double amount = context.argAsDouble(1, 0.0D);
-        if (amount == 0.0D) {
-            return;
-        }
-
-        DTRControl dtr = (DTRControl) FactionsPlugin.getInstance().getLandRaidControl();
-        target.setDTR(Math.max(Math.min(target.getDTR() + amount, dtr.getMaxDTR(target)), FactionsPlugin.getInstance().conf().factions().landRaidControl().dtr().getMinDTR()));
-        context.msg(TL.COMMAND_DTR_MODIFY_DONE, target.describeTo(context.fPlayer, false), DTRControl.round(target.getDTR()));
+    double amount = context.argAsDouble(1, 0.0D);
+    if (amount == 0.0D) {
+      return;
     }
 
-    @Override
-    public TL getUsageTranslation() {
-        return TL.COMMAND_DTR_MODIFY_DESCRIPTION;
-    }
+    DTRControl dtr = (DTRControl) FactionsPlugin.getInstance().getLandRaidControl();
+    target.setDTR(Math.max(Math.min(target.getDTR() + amount, dtr.getMaxDTR(target)),
+        FactionsPlugin.getInstance().conf().factions().landRaidControl().dtr().getMinDTR()));
+    context.msg(TL.COMMAND_DTR_MODIFY_DONE, target.describeTo(context.fPlayer, false),
+        DTRControl.round(target.getDTR()));
+  }
+
+  @Override
+  public TL getUsageTranslation() {
+    return TL.COMMAND_DTR_MODIFY_DESCRIPTION;
+  }
+
 }

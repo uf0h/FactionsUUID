@@ -9,28 +9,28 @@ import org.bukkit.event.HandlerList;
  */
 public class FactionEvent extends Event {
 
-    private static final HandlerList handlers = new HandlerList();
-    private final Faction faction;
+  private static final HandlerList handlers = new HandlerList();
+  private final Faction faction;
 
-    public FactionEvent(Faction faction) {
-        this.faction = faction;
-    }
+  public FactionEvent(Faction faction) {
+    this.faction = faction;
+  }
 
-    /**
-     * Get the Faction involved in the event.
-     *
-     * @return faction involved in the event.
-     */
-    public Faction getFaction() {
-        return this.faction;
-    }
+  public static HandlerList getHandlerList() {
+    return handlers;
+  }
 
-    public HandlerList getHandlers() {
-        return handlers;
-    }
+  /**
+   * Get the Faction involved in the event.
+   *
+   * @return faction involved in the event.
+   */
+  public Faction getFaction() {
+    return this.faction;
+  }
 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+  public HandlerList getHandlers() {
+    return handlers;
+  }
 
 }

@@ -4,14 +4,15 @@ import com.massivecraft.factions.data.MemoryFaction;
 
 public class JSONFaction extends MemoryFaction {
 
-    public JSONFaction(MemoryFaction arg0) {
-        super(arg0);
-    }
+  public JSONFaction(MemoryFaction arg0) {
+    super(arg0);
+  }
 
-    private JSONFaction() {
-    }
+  private JSONFaction() {
+  }
 
-    public JSONFaction(String id) {
-        super(id);
-    }
+  public JSONFaction(String id) {
+    super(id);
+  }
+
 }

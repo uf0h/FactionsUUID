@@ -1,5 +1,11 @@
 package com.massivecraft.factions.data.json;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.massivecraft.factions.Faction;
@@ -9,156 +15,152 @@ import com.massivecraft.factions.data.MemoryFaction;
 import com.massivecraft.factions.data.MemoryFactions;
 import com.massivecraft.factions.util.DiscUtil;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 public class JSONFactions extends MemoryFactions {
-    public Gson getGson() {
-        return FactionsPlugin.getInstance().getGson();
+
+  private final File file;
+
+  public JSONFactions() {
+    if (FactionsPlugin.getInstance().getServerUUID() == null) {
+      FactionsPlugin.getInstance().grumpException(new RuntimeException());
+    }
+    this.file = new File(FactionsPlugin.getInstance().getDataFolder(), "data/factions.json");
+    this.nextId = 1;
+  }
+
+  public Gson getGson() {
+    return FactionsPlugin.getInstance().getGson();
+  }
+
+  // -------------------------------------------- //
+  // CONSTRUCTORS
+  // -------------------------------------------- //
+
+  public File getFile() {
+    return file;
+  }
+
+  public void forceSave() {
+    forceSave(true);
+  }
+
+  public void forceSave(boolean sync) {
+    final Map<String, JSONFaction> entitiesThatShouldBeSaved = new HashMap<>();
+    for (Faction entity : this.factions.values()) {
+      entitiesThatShouldBeSaved.put(entity.getId(), (JSONFaction) entity);
     }
 
-    private final File file;
+    saveCore(file, entitiesThatShouldBeSaved, sync);
+  }
 
-    public File getFile() {
-        return file;
+  private boolean saveCore(File target, Map<String, JSONFaction> entities, boolean sync) {
+    return DiscUtil.writeCatch(target, FactionsPlugin.getInstance().getGson().toJson(entities), sync);
+  }
+
+  public int load() {
+    Map<String, JSONFaction> factions = this.loadCore();
+    if (factions == null) {
+      return 0;
+    }
+    this.factions.putAll(factions);
+
+    super.load();
+    return factions.size();
+  }
+
+  private Map<String, JSONFaction> loadCore() {
+    if (!this.file.exists()) {
+      return new HashMap<>();
     }
 
-    // -------------------------------------------- //
-    // CONSTRUCTORS
-    // -------------------------------------------- //
-
-    public JSONFactions() {
-        if (FactionsPlugin.getInstance().getServerUUID() == null) {
-            FactionsPlugin.getInstance().grumpException(new RuntimeException());
-        }
-        this.file = new File(FactionsPlugin.getInstance().getDataFolder(), "data/factions.json");
-        this.nextId = 1;
+    String content = DiscUtil.readCatch(this.file);
+    if (content == null) {
+      return null;
     }
 
-    public void forceSave() {
-        forceSave(true);
-    }
-
-    public void forceSave(boolean sync) {
-        final Map<String, JSONFaction> entitiesThatShouldBeSaved = new HashMap<>();
-        for (Faction entity : this.factions.values()) {
-            entitiesThatShouldBeSaved.put(entity.getId(), (JSONFaction) entity);
-        }
-
-        saveCore(file, entitiesThatShouldBeSaved, sync);
-    }
-
-    private boolean saveCore(File target, Map<String, JSONFaction> entities, boolean sync) {
-        return DiscUtil.writeCatch(target, FactionsPlugin.getInstance().getGson().toJson(entities), sync);
-    }
-
-    public int load() {
-        Map<String, JSONFaction> factions = this.loadCore();
-        if (factions == null) {
-            return 0;
-        }
-        this.factions.putAll(factions);
-
-        super.load();
-        return factions.size();
-    }
-
-    private Map<String, JSONFaction> loadCore() {
-        if (!this.file.exists()) {
-            return new HashMap<>();
-        }
-
-        String content = DiscUtil.readCatch(this.file);
-        if (content == null) {
-            return null;
-        }
-
-        Map<String, JSONFaction> data = FactionsPlugin.getInstance().getGson().fromJson(content, new TypeToken<Map<String, JSONFaction>>() {
+    Map<String, JSONFaction> data =
+        FactionsPlugin.getInstance().getGson().fromJson(content, new TypeToken<Map<String, JSONFaction>>() {
         }.getType());
 
-        this.nextId = 1;
+    this.nextId = 1;
 
-        for (Entry<String, JSONFaction> entry : data.entrySet()) {
-            String id = entry.getKey();
-            Faction f = entry.getValue();
-            f.checkPerms();
-            f.setId(id);
-            this.updateNextIdForId(id);
+    for (Entry<String, JSONFaction> entry : data.entrySet()) {
+      String id = entry.getKey();
+      Faction f = entry.getValue();
+      f.checkPerms();
+      f.setId(id);
+      this.updateNextIdForId(id);
+    }
+
+    return data;
+  }
+
+  private Set<String> whichKeysNeedMigration(Set<String> keys) {
+    HashSet<String> list = new HashSet<>();
+    for (String value : keys) {
+      if (!value.matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")) {
+        // Not a valid UUID..
+        if (value.matches("[a-zA-Z0-9_]{2,16}")) {
+          // Valid playername, we'll mark this as one for conversion
+          // to UUID
+          list.add(value);
         }
-
-        return data;
+      }
     }
+    return list;
+  }
 
-    private Set<String> whichKeysNeedMigration(Set<String> keys) {
-        HashSet<String> list = new HashSet<>();
-        for (String value : keys) {
-            if (!value.matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")) {
-                // Not a valid UUID..
-                if (value.matches("[a-zA-Z0-9_]{2,16}")) {
-                    // Valid playername, we'll mark this as one for conversion
-                    // to UUID
-                    list.add(value);
-                }
-            }
-        }
-        return list;
+  // -------------------------------------------- //
+  // ID MANAGEMENT
+  // -------------------------------------------- //
+
+  public String getNextId() {
+    while (!isIdFree(this.nextId)) {
+      this.nextId += 1;
     }
+    return Integer.toString(this.nextId);
+  }
 
-    // -------------------------------------------- //
-    // ID MANAGEMENT
-    // -------------------------------------------- //
+  public boolean isIdFree(String id) {
+    return !this.factions.containsKey(id);
+  }
 
-    public String getNextId() {
-        while (!isIdFree(this.nextId)) {
-            this.nextId += 1;
-        }
-        return Integer.toString(this.nextId);
+  public boolean isIdFree(int id) {
+    return this.isIdFree(Integer.toString(id));
+  }
+
+  protected synchronized void updateNextIdForId(int id) {
+    if (this.nextId < id) {
+      this.nextId = id + 1;
     }
+  }
 
-    public boolean isIdFree(String id) {
-        return !this.factions.containsKey(id);
+  protected void updateNextIdForId(String id) {
+    try {
+      int idAsInt = Integer.parseInt(id);
+      this.updateNextIdForId(idAsInt);
+    } catch (Exception ignored) {
     }
+  }
 
-    public boolean isIdFree(int id) {
-        return this.isIdFree(Integer.toString(id));
-    }
+  @Override
+  public Faction generateFactionObject() {
+    String id = getNextId();
+    Faction faction = new JSONFaction(id);
+    updateNextIdForId(id);
+    return faction;
+  }
 
-    protected synchronized void updateNextIdForId(int id) {
-        if (this.nextId < id) {
-            this.nextId = id + 1;
-        }
-    }
+  @Override
+  public Faction generateFactionObject(String id) {
+    return new JSONFaction(id);
+  }
 
-    protected void updateNextIdForId(String id) {
-        try {
-            int idAsInt = Integer.parseInt(id);
-            this.updateNextIdForId(idAsInt);
-        } catch (Exception ignored) {
-        }
-    }
+  @Override
+  public void convertFrom(MemoryFactions old) {
+    old.factions.forEach((tag, faction) -> this.factions.put(tag, new JSONFaction((MemoryFaction) faction)));
+    this.nextId = old.nextId;
+    forceSave();
+    Factions.instance = this;
+  }
 
-    @Override
-    public Faction generateFactionObject() {
-        String id = getNextId();
-        Faction faction = new JSONFaction(id);
-        updateNextIdForId(id);
-        return faction;
-    }
-
-    @Override
-    public Faction generateFactionObject(String id) {
-        return new JSONFaction(id);
-    }
-
-    @Override
-    public void convertFrom(MemoryFactions old) {
-        old.factions.forEach((tag, faction) -> this.factions.put(tag, new JSONFaction((MemoryFaction) faction)));
-        this.nextId = old.nextId;
-        forceSave();
-        Factions.instance = this;
-    }
 }

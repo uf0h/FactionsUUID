@@ -18,43 +18,46 @@ import org.bukkit.event.player.PlayerPortalEvent;
    Supports versions older than 1.14 with TravelAgent.
  */
 public class PortalListener implements Listener {
-    public FactionsPlugin plugin;
 
-    public PortalListener(FactionsPlugin plugin) {
-        this.plugin = plugin;
+  public FactionsPlugin plugin;
+
+  public PortalListener(FactionsPlugin plugin) {
+    this.plugin = plugin;
+  }
+
+  @EventHandler
+  public void onTravel(PlayerPortalEvent event) {
+    TravelAgent agent = event.getPortalTravelAgent();
+
+    // If they aren't able to find a portal, it'll try to create one.
+    if (event.useTravelAgent() && agent.getCanCreatePortal() && agent.findPortal(event.getTo()) == null) {
+      if (this.shouldCancel(event.getTo(), event.getPlayer())) {
+        event.setCancelled(true);
+      }
+    }
+  }
+
+  public boolean shouldCancel(Location location, Player player) {
+    if (!FactionsPlugin.getInstance().worldUtil().isEnabled(player.getWorld())) {
+      return true;
     }
 
-    @EventHandler
-    public void onTravel(PlayerPortalEvent event) {
-        TravelAgent agent = event.getPortalTravelAgent();
-
-        // If they aren't able to find a portal, it'll try to create one.
-        if (event.useTravelAgent() && agent.getCanCreatePortal() && agent.findPortal(event.getTo()) == null) {
-            if (this.shouldCancel(event.getTo(), event.getPlayer())) {
-                event.setCancelled(true);
-            }
-        }
+    if (!FactionsPlugin.getInstance().conf().factions().portals().isLimit()) {
+      return false; // Don't do anything if they don't want us to.
+    }
+    FLocation loc = new FLocation(location);
+    Faction faction = Board.getInstance().getFactionAt(loc);
+    if (faction.isWilderness()) {
+      return false; // We don't care about wilderness.
+    } else if (!faction.isNormal() && !player.isOp()) {
+      // Don't let non ops make portals in safezone or warzone.
+      return true;
     }
 
-    public boolean shouldCancel(Location location, Player player) {
-        if (!FactionsPlugin.getInstance().worldUtil().isEnabled(player.getWorld())) {
-            return true;
-        }
+    FPlayer fp = FPlayers.getInstance().getByPlayer(player);
+    String mininumRelation = FactionsPlugin.getInstance().conf().factions().portals()
+        .getMinimumRelation(); // Defaults to Neutral if typed wrong.
+    return !fp.getFaction().getRelationTo(faction).isAtLeast(Relation.fromString(mininumRelation));
+  }
 
-        if (!FactionsPlugin.getInstance().conf().factions().portals().isLimit()) {
-            return false; // Don't do anything if they don't want us to.
-        }
-        FLocation loc = new FLocation(location);
-        Faction faction = Board.getInstance().getFactionAt(loc);
-        if (faction.isWilderness()) {
-            return false; // We don't care about wilderness.
-        } else if (!faction.isNormal() && !player.isOp()) {
-            // Don't let non ops make portals in safezone or warzone.
-            return true;
-        }
-
-        FPlayer fp = FPlayers.getInstance().getByPlayer(player);
-        String mininumRelation = FactionsPlugin.getInstance().conf().factions().portals().getMinimumRelation(); // Defaults to Neutral if typed wrong.
-        return !fp.getFaction().getRelationTo(faction).isAtLeast(Relation.fromString(mininumRelation));
-    }
 }

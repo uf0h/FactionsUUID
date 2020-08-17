@@ -1,5 +1,9 @@
 package com.massivecraft.factions.gui;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.perms.Permissible;
@@ -9,124 +13,123 @@ import com.massivecraft.factions.util.TL;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 public class PermissibleRelationGUI extends GUI<Permissible> {
-    private static final Map<Permissible, SimpleItem> items;
-    public static SimpleItem offlineSwitch = SimpleItem.builder().setName(TL.GUI_PERMS_TOGGLE.toString())
-        .setMaterial(Material.LEVER).build();
 
-    static {
-        items = new LinkedHashMap<>();
-        SimpleItem.Builder starter = SimpleItem.builder().setName("&8[{relation-color}{relation}&8]");
+  private static final Map<Permissible, SimpleItem> items;
+  public static SimpleItem offlineSwitch = SimpleItem.builder().setName(TL.GUI_PERMS_TOGGLE.toString())
+      .setMaterial(Material.LEVER).build();
 
-        SimpleItem recruit = starter.build();
-        recruit.setName(Role.RECRUIT.getTranslation().toString());
-        recruit.setMaterial(Material.WOOD_SWORD);
-        items.put(Role.RECRUIT, recruit);
+  static {
+    items = new LinkedHashMap<>();
+    SimpleItem.Builder starter = SimpleItem.builder().setName("&8[{relation-color}{relation}&8]");
 
-        SimpleItem normal = starter.build();
-        normal.setName(Role.NORMAL.getTranslation().toString());
-        normal.setMaterial(Material.STONE_SWORD);
-        items.put(Role.NORMAL, normal);
+    SimpleItem recruit = starter.build();
+    recruit.setName(Role.RECRUIT.getTranslation().toString());
+    recruit.setMaterial(Material.WOOD_SWORD);
+    items.put(Role.RECRUIT, recruit);
 
-        SimpleItem moderator = starter.build();
-        moderator.setName(Role.MODERATOR.getTranslation().toString());
-        moderator.setMaterial(Material.IRON_SWORD);
-        items.put(Role.MODERATOR, moderator);
+    SimpleItem normal = starter.build();
+    normal.setName(Role.NORMAL.getTranslation().toString());
+    normal.setMaterial(Material.STONE_SWORD);
+    items.put(Role.NORMAL, normal);
 
-        SimpleItem coleader = starter.build();
-        coleader.setName(Role.COLEADER.getTranslation().toString());
-        coleader.setMaterial(Material.DIAMOND_SWORD);
-        items.put(Role.COLEADER, coleader);
+    SimpleItem moderator = starter.build();
+    moderator.setName(Role.MODERATOR.getTranslation().toString());
+    moderator.setMaterial(Material.IRON_SWORD);
+    items.put(Role.MODERATOR, moderator);
 
-        SimpleItem ally = starter.build();
-        ally.setName(Relation.ALLY.getTranslation());
-        ally.setMaterial(Material.GOLD_SWORD);
-        items.put(Relation.ALLY, ally);
+    SimpleItem coleader = starter.build();
+    coleader.setName(Role.COLEADER.getTranslation().toString());
+    coleader.setMaterial(Material.DIAMOND_SWORD);
+    items.put(Role.COLEADER, coleader);
 
-        SimpleItem truce = starter.build();
-        truce.setName(Relation.TRUCE.getTranslation());
-        truce.setMaterial(Material.IRON_AXE);
-        items.put(Relation.TRUCE, truce);
+    SimpleItem ally = starter.build();
+    ally.setName(Relation.ALLY.getTranslation());
+    ally.setMaterial(Material.GOLD_SWORD);
+    items.put(Relation.ALLY, ally);
 
-        SimpleItem neutral = starter.build();
-        neutral.setName(Relation.NEUTRAL.getTranslation());
-        neutral.setMaterial(Material.STONE_HOE);
-        items.put(Relation.NEUTRAL, neutral);
+    SimpleItem truce = starter.build();
+    truce.setName(Relation.TRUCE.getTranslation());
+    truce.setMaterial(Material.IRON_AXE);
+    items.put(Relation.TRUCE, truce);
 
-        SimpleItem enemy = starter.build();
-        enemy.setName(Relation.ENEMY.getTranslation());
-        enemy.setMaterial(Material.STONE_AXE);
-        items.put(Relation.ENEMY, enemy);
+    SimpleItem neutral = starter.build();
+    neutral.setName(Relation.NEUTRAL.getTranslation());
+    neutral.setMaterial(Material.STONE_HOE);
+    items.put(Relation.NEUTRAL, neutral);
+
+    SimpleItem enemy = starter.build();
+    enemy.setName(Relation.ENEMY.getTranslation());
+    enemy.setMaterial(Material.STONE_AXE);
+    items.put(Relation.ENEMY, enemy);
+  }
+
+  private final boolean online;
+
+  public PermissibleRelationGUI(boolean online, FPlayer user) {
+    super(user, FactionsPlugin.getInstance().conf().factions().other().isSeparateOfflinePerms() ? 2 : 1);
+    this.online = online;
+    build();
+  }
+
+  @Override
+  protected String getName() {
+    String bit = FactionsPlugin.getInstance().conf().factions().other().isSeparateOfflinePerms() ?
+                 TL.GUI_PERMS_RELATION_ONLINEOFFLINEBIT
+                     .format(online ? TL.GUI_PERMS_ONLINE.toString() : TL.GUI_PERMS_OFFLINE)
+                                                                                                 : "";
+    return TL.GUI_PERMS_RELATION_NAME.format(bit);
+  }
+
+  @Override
+  protected String parse(String toParse, Permissible permissible) {
+    // Uppercase the first letter
+    String name = permissible.toString().substring(0, 1).toUpperCase() + permissible.toString().substring(1);
+
+    toParse = toParse.replace("{relation-color}", permissible.getColor().toString());
+    toParse = toParse.replace("{relation}", name);
+    return toParse;
+  }
+
+  @Override
+  public void click(int slot, ClickType clickType) {
+    if (FactionsPlugin.getInstance().conf().factions().other().isSeparateOfflinePerms() && slot == 13) {
+      new PermissibleRelationGUI(!online, user).open();
+    } else {
+      super.click(slot, clickType);
     }
+  }
 
-    private final boolean online;
+  @Override
+  protected void onClick(Permissible permissible, ClickType clickType) {
+    new PermissibleActionGUI(online, user, permissible).open();
+  }
 
-    public PermissibleRelationGUI(boolean online, FPlayer user) {
-        super(user, FactionsPlugin.getInstance().conf().factions().other().isSeparateOfflinePerms() ? 2 : 1);
-        this.online = online;
-        build();
+  @Override
+  protected Map<Integer, Permissible> createSlotMap() {
+    Map<Integer, Permissible> map = new HashMap<>();
+    if (online) {
+      map.put(0, Role.RECRUIT);
+      map.put(1, Role.NORMAL);
+      map.put(2, Role.MODERATOR);
+      map.put(3, Role.COLEADER);
     }
+    map.put(5, Relation.ALLY);
+    map.put(6, Relation.NEUTRAL);
+    map.put(7, Relation.TRUCE);
+    map.put(8, Relation.ENEMY);
+    return map;
+  }
 
-    @Override
-    protected String getName() {
-        String bit = FactionsPlugin.getInstance().conf().factions().other().isSeparateOfflinePerms() ?
-                TL.GUI_PERMS_RELATION_ONLINEOFFLINEBIT.format(online ? TL.GUI_PERMS_ONLINE.toString() : TL.GUI_PERMS_OFFLINE)
-                : "";
-        return TL.GUI_PERMS_RELATION_NAME.format(bit);
-    }
+  @Override
+  protected SimpleItem getItem(Permissible permissible) {
+    return items.get(permissible);
+  }
 
-    @Override
-    protected String parse(String toParse, Permissible permissible) {
-        // Uppercase the first letter
-        String name = permissible.toString().substring(0, 1).toUpperCase() + permissible.toString().substring(1);
+  @Override
+  protected Map<Integer, SimpleItem> createDummyItems() {
+    return FactionsPlugin.getInstance().conf().factions().other().isSeparateOfflinePerms() ?
+           Collections.singletonMap(13, offlineSwitch) : Collections.emptyMap();
+  }
 
-        toParse = toParse.replace("{relation-color}", permissible.getColor().toString());
-        toParse = toParse.replace("{relation}", name);
-        return toParse;
-    }
-
-    @Override
-    public void click(int slot, ClickType clickType) {
-        if (FactionsPlugin.getInstance().conf().factions().other().isSeparateOfflinePerms() && slot == 13) {
-            new PermissibleRelationGUI(!online, user).open();
-        } else {
-            super.click(slot, clickType);
-        }
-    }
-
-    @Override
-    protected void onClick(Permissible permissible, ClickType clickType) {
-        new PermissibleActionGUI(online, user, permissible).open();
-    }
-
-    @Override
-    protected Map<Integer, Permissible> createSlotMap() {
-        Map<Integer, Permissible> map = new HashMap<>();
-        if (online) {
-            map.put(0, Role.RECRUIT);
-            map.put(1, Role.NORMAL);
-            map.put(2, Role.MODERATOR);
-            map.put(3, Role.COLEADER);
-        }
-        map.put(5, Relation.ALLY);
-        map.put(6, Relation.NEUTRAL);
-        map.put(7, Relation.TRUCE);
-        map.put(8, Relation.ENEMY);
-        return map;
-    }
-
-    @Override
-    protected SimpleItem getItem(Permissible permissible) {
-        return items.get(permissible);
-    }
-
-    @Override
-    protected Map<Integer, SimpleItem> createDummyItems() {
-        return FactionsPlugin.getInstance().conf().factions().other().isSeparateOfflinePerms() ? Collections.singletonMap(13, offlineSwitch) : Collections.emptyMap();
-    }
 }
