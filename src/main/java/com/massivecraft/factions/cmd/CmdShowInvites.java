@@ -7,6 +7,7 @@ import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.util.TL;
 import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
+import java.util.UUID;
 
 public class CmdShowInvites extends FCommand {
 
@@ -22,9 +23,9 @@ public class CmdShowInvites extends FCommand {
     @Override
     public void perform(CommandContext context) {
         FancyMessage msg = new FancyMessage(TL.COMMAND_SHOWINVITES_PENDING.toString()).color(ChatColor.GOLD);
-        for (String id : context.faction.getInvites()) {
+        for (UUID id : context.faction.getInvites()) {
             FPlayer fp = FPlayers.getInstance().getById(id);
-            String name = fp != null ? fp.getName() : id;
+            String name = fp != null ? fp.getName() : id.toString();
             msg.then(name + " ").color(ChatColor.WHITE).tooltip(TL.COMMAND_SHOWINVITES_CLICKTOREVOKE.format(name)).command("/" + FactionsPlugin.getInstance().conf().getCommandBase().get(0) + " deinvite " + name);
         }
 

@@ -44,12 +44,4 @@ public class CmdSetMaxVaults extends FCommand {
         return TL.COMMAND_SETMAXVAULTS_DESCRIPTION;
     }
 
-    /*protected class MaxVaultBrigadier implements BrigadierProvider {
-        @Override
-        public ArgumentBuilder<Object, ?> get(ArgumentBuilder<Object, ?> parent) {
-            return parent.then(RequiredArgumentBuilder.argument("faction", StringArgumentType.word())
-                    .then(RequiredArgumentBuilder.argument("number", IntegerArgumentType.integer(0, 99))));
-        }
-    }*/
-
 }

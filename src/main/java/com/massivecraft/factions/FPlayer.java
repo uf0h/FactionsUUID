@@ -1,7 +1,7 @@
 package com.massivecraft.factions;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 import com.massivecraft.factions.iface.EconomyParticipator;
 import com.massivecraft.factions.perms.Relation;
 import com.massivecraft.factions.perms.Role;
@@ -12,34 +12,29 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-
 /**
+ * Logged in players always have exactly one FPlayer instance. Logged out players may or may not have an FPlayer
+ * instance. They will always have one if they are part of a faction. This is because only players with a faction are
+ * saved to disk (in order to not waste disk space).
+ * <p/>
  * The FPlayer is linked to a minecraft player using the player name.
- *
- * <p>
- * Logged in players always have exactly one FPlayer instance. Logged out players may or may not have an
- * FPlayer instance. They will always have one if they are part of a faction. This is because only players
- * with a faction are saved to disk (in order to not waste disk space).
- * </p>
- *
- * <p>
- * The same instance is always returned for the same player. This means you can use the == operator. No
- * .equals method necessary.
- * </p>
+ * <p/>
+ * The same instance is always returned for the same player. This means you can use the == operator. No .equals method
+ * necessary.
  */
-public interface FPlayer extends EconomyParticipator {
 
+public interface FPlayer extends EconomyParticipator {
     void login();
 
     void logout();
 
     Faction getFaction();
 
-    void setFaction(Faction faction);
-
     String getFactionId();
 
     boolean hasFaction();
+
+    void setFaction(Faction faction);
 
     boolean willAutoLeave();
 
@@ -83,17 +78,17 @@ public interface FPlayer extends EconomyParticipator {
 
     void setIsAdminBypassing(boolean val);
 
-    ChatMode getChatMode();
-
     void setChatMode(ChatMode chatMode);
 
-    boolean isIgnoreAllianceChat();
+    ChatMode getChatMode();
 
     void setIgnoreAllianceChat(boolean ignore);
 
-    boolean isSpyingChat();
+    boolean isIgnoreAllianceChat();
 
     void setSpyingChat(boolean chatSpying);
+
+    boolean isSpyingChat();
 
     void resetFactionData(boolean doSpoutUpdate);
 
@@ -217,9 +212,15 @@ public interface FPlayer extends EconomyParticipator {
 
     boolean attemptClaim(Faction forFaction, FLocation location, boolean notifyFailure);
 
+    @Deprecated
     String getId();
 
+    @Deprecated
     void setId(String id);
+
+    UUID getUniqueId();
+
+    void setUniqueId(UUID id);
 
     Player getPlayer();
 
@@ -283,4 +284,5 @@ public interface FPlayer extends EconomyParticipator {
 
     void clearWarmup();
 
+    void setOfflinePlayer(Player player);
 }

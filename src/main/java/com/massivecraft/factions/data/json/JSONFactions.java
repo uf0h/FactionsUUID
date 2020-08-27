@@ -11,10 +11,8 @@ import com.massivecraft.factions.util.DiscUtil;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 public class JSONFactions extends MemoryFactions {
     public Gson getGson() {
@@ -81,6 +79,7 @@ public class JSONFactions extends MemoryFactions {
         }.getType());
 
         this.nextId = 1;
+        // Do we have any names that need updating in claims or invites?
 
         for (Entry<String, JSONFaction> entry : data.entrySet()) {
             String id = entry.getKey();
@@ -91,21 +90,6 @@ public class JSONFactions extends MemoryFactions {
         }
 
         return data;
-    }
-
-    private Set<String> whichKeysNeedMigration(Set<String> keys) {
-        HashSet<String> list = new HashSet<>();
-        for (String value : keys) {
-            if (!value.matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")) {
-                // Not a valid UUID..
-                if (value.matches("[a-zA-Z0-9_]{2,16}")) {
-                    // Valid playername, we'll mark this as one for conversion
-                    // to UUID
-                    list.add(value);
-                }
-            }
-        }
-        return list;
     }
 
     // -------------------------------------------- //

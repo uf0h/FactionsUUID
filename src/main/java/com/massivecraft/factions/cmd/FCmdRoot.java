@@ -38,7 +38,6 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     }
 
     public CmdAutoHelp cmdAutoHelp = new CmdAutoHelp();
-
     public CmdAdmin cmdAdmin = new CmdAdmin();
     public CmdAutoClaim cmdAutoClaim = new CmdAutoClaim();
     public CmdBoom cmdBoom = new CmdBoom();

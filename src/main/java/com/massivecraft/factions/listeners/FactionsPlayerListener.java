@@ -49,7 +49,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.NumberConversions;
 
-
 public final class FactionsPlayerListener extends AbstractListener {
 
     private final FactionsPlugin plugin;
@@ -58,22 +57,22 @@ public final class FactionsPlayerListener extends AbstractListener {
     private final HashMap<UUID, Long> showTimes = new HashMap<>();
     private final Map<String, InteractAttemptSpam> interactSpammers = new HashMap<>();
 
-    public FactionsPlayerListener(final FactionsPlugin plugin) {
+    public FactionsPlayerListener(FactionsPlugin plugin) {
         this.plugin = plugin;
-        for (final Player player : plugin.getServer().getOnlinePlayers()) {
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
             initPlayer(player);
         }
     }
 
     public static boolean preventCommand(String fullCmd, final Player player) {
         final MainConfig.Factions.Protection protection =
-            FactionsPlugin.getInstance().conf().factions().protection();
+          FactionsPlugin.getInstance().conf().factions().protection();
         if ((protection.getTerritoryNeutralDenyCommands().isEmpty() &&
-            protection.getTerritoryEnemyDenyCommands().isEmpty() &&
-            protection.getPermanentFactionMemberDenyCommands().isEmpty() &&
-            protection.getWildernessDenyCommands().isEmpty() &&
-            protection.getTerritoryAllyDenyCommands().isEmpty() &&
-            protection.getWarzoneDenyCommands().isEmpty())) {
+             protection.getTerritoryEnemyDenyCommands().isEmpty() &&
+             protection.getPermanentFactionMemberDenyCommands().isEmpty() &&
+             protection.getWildernessDenyCommands().isEmpty() &&
+             protection.getTerritoryAllyDenyCommands().isEmpty() &&
+             protection.getWarzoneDenyCommands().isEmpty())) {
             return false;
         }
 
@@ -100,36 +99,36 @@ public final class FactionsPlayerListener extends AbstractListener {
 
         final Faction at = Board.getInstance().getFactionAt(me.getLastStoodAt());
         if (at.isWilderness() && !protection.getWildernessDenyCommands().isEmpty() && !me
-            .isAdminBypassing() && isCommandInSet(fullCmd, shortCmd,
-            protection.getWildernessDenyCommands())) {
+          .isAdminBypassing() && isCommandInSet(fullCmd, shortCmd,
+                                                protection.getWildernessDenyCommands())) {
             me.msg(TL.PLAYER_COMMAND_WILDERNESS, fullCmd);
             return true;
         }
 
         final Relation rel = at.getRelationTo(me);
         if (at.isNormal() && rel.isAlly() && !protection.getTerritoryAllyDenyCommands().isEmpty() && !me
-            .isAdminBypassing() && isCommandInSet(fullCmd, shortCmd,
-            protection.getTerritoryAllyDenyCommands())) {
+          .isAdminBypassing() && isCommandInSet(fullCmd, shortCmd,
+                                                protection.getTerritoryAllyDenyCommands())) {
             me.msg(TL.PLAYER_COMMAND_ALLY, fullCmd);
             return true;
         }
 
         if (at.isNormal() && rel.isNeutral() && !protection.getTerritoryNeutralDenyCommands().isEmpty() && !me
-            .isAdminBypassing() && isCommandInSet(fullCmd, shortCmd,
-            protection.getTerritoryNeutralDenyCommands())) {
+          .isAdminBypassing() && isCommandInSet(fullCmd, shortCmd,
+                                                protection.getTerritoryNeutralDenyCommands())) {
             me.msg(TL.PLAYER_COMMAND_NEUTRAL, fullCmd);
             return true;
         }
 
         if (at.isNormal() && rel.isEnemy() && !protection.getTerritoryEnemyDenyCommands().isEmpty() && !me
-            .isAdminBypassing() && isCommandInSet(fullCmd, shortCmd,
-            protection.getTerritoryEnemyDenyCommands())) {
+          .isAdminBypassing() && isCommandInSet(fullCmd, shortCmd,
+                                                protection.getTerritoryEnemyDenyCommands())) {
             me.msg(TL.PLAYER_COMMAND_ENEMY, fullCmd);
             return true;
         }
 
         if (at.isWarZone() && !protection.getWarzoneDenyCommands().isEmpty() && !me
-            .isAdminBypassing() && isCommandInSet(fullCmd, shortCmd, protection.getWarzoneDenyCommands())) {
+          .isAdminBypassing() && isCommandInSet(fullCmd, shortCmd, protection.getWarzoneDenyCommands())) {
             me.msg(TL.PLAYER_COMMAND_WARZONE, fullCmd);
             return true;
         }
@@ -152,12 +151,12 @@ public final class FactionsPlayerListener extends AbstractListener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerJoin(final PlayerJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         initPlayer(event.getPlayer());
         this.plugin.updatesOnJoin(event.getPlayer());
     }
 
-    private void initPlayer(final Player player) {
+    private void initPlayer(Player player) {
         // Make sure that all online players do have a fplayer.
         final FPlayer me = FPlayers.getInstance().getByPlayer(player);
         ((MemoryFPlayer) me).setName(player.getName());
@@ -171,18 +170,16 @@ public final class FactionsPlayerListener extends AbstractListener {
 
         me.login(); // set kills / deaths
 
+        me.setOfflinePlayer(player);
+
         if (me.isSpyingChat() && !player.hasPermission(Permission.CHATSPY.node)) {
             me.setSpyingChat(false);
-            FactionsPlugin.getInstance().log(Level.INFO,
-                "Found %s spying chat without permission on login. Disabled their chat spying.",
-                player.getName());
+            FactionsPlugin.getInstance().log(Level.INFO, "Found %s spying chat without permission on login. Disabled their chat spying.", player.getName());
         }
 
         if (me.isAdminBypassing() && !player.hasPermission(Permission.BYPASS.node)) {
             me.setIsAdminBypassing(false);
-            FactionsPlugin.getInstance().log(Level.INFO,
-                "Found %s on admin Bypass without permission on login. Disabled it for them.",
-                player.getName());
+            FactionsPlugin.getInstance().log(Level.INFO, "Found %s on admin Bypass without permission on login. Disabled it for them.", player.getName());
         }
 
         if (plugin.worldUtil().isEnabled(player.getWorld())) {
@@ -190,7 +187,8 @@ public final class FactionsPlayerListener extends AbstractListener {
         }
     }
 
-    private void initFactionWorld(final FPlayer me) {
+
+    private void initFactionWorld(FPlayer me) {
         // Check for Faction announcements. Let's delay this so they actually see it.
         new BukkitRunnable() {
             @Override
@@ -201,9 +199,9 @@ public final class FactionsPlayerListener extends AbstractListener {
             }
         }.runTaskLater(FactionsPlugin.getInstance(), 33L); // Don't ask me why.
 
-        final Faction myFaction = me.getFaction();
+        Faction myFaction = me.getFaction();
         if (!myFaction.isWilderness()) {
-            for (final FPlayer other : myFaction.getFPlayersWhereOnline(true)) {
+            for (FPlayer other : myFaction.getFPlayersWhereOnline(true)) {
                 if (other != me && other.isMonitoringJoins()) {
                     other.msg(TL.FACTION_LOGIN, me.getName());
                 }
@@ -218,14 +216,13 @@ public final class FactionsPlayerListener extends AbstractListener {
         }
 
         if (FactionsPlugin.getInstance().getSeeChunkUtil() != null) {
-            FactionsPlugin.getInstance().getSeeChunkUtil()
-                .updatePlayerInfo(UUID.fromString(me.getId()), me.isSeeingChunk());
+            FactionsPlugin.getInstance().getSeeChunkUtil().updatePlayerInfo(me.getUniqueId(), me.isSeeingChunk());
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerQuit(final PlayerQuitEvent event) {
-        final FPlayer me = FPlayers.getInstance().getByPlayer(event.getPlayer());
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        FPlayer me = FPlayers.getInstance().getByPlayer(event.getPlayer());
 
         FactionsPlugin.getInstance().getLandRaidControl().onQuit(me);
         // and update their last login time to point to when the logged off, for auto-remove routine
@@ -240,13 +237,14 @@ public final class FactionsPlayerListener extends AbstractListener {
             FactionsPlugin.getInstance().getTimers().remove(me.getPlayer().getUniqueId());
         }
 
-        final Faction myFaction = me.getFaction();
+
+        Faction myFaction = me.getFaction();
         if (!myFaction.isWilderness()) {
             myFaction.memberLoggedOff();
         }
 
         if (!myFaction.isWilderness()) {
-            for (final FPlayer player : myFaction.getFPlayersWhereOnline(true)) {
+            for (FPlayer player : myFaction.getFPlayersWhereOnline(true)) {
                 if (player != me && player.isMonitoringJoins()) {
                     player.msg(TL.FACTION_LOGOUT, me.getName());
                 }
@@ -254,13 +252,13 @@ public final class FactionsPlayerListener extends AbstractListener {
         }
 
         if (FactionsPlugin.getInstance().getSeeChunkUtil() != null) {
-            FactionsPlugin.getInstance().getSeeChunkUtil()
-                .updatePlayerInfo(UUID.fromString(me.getId()), false);
+            FactionsPlugin.getInstance().getSeeChunkUtil().updatePlayerInfo(me.getUniqueId(), false);
         }
+        me.setOfflinePlayer(null);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlayerMove(final PlayerMoveEvent event) {
+    public void onPlayerMove(PlayerMoveEvent event) {
         if (!plugin.worldUtil().isEnabled(event.getPlayer().getWorld())) {
             return;
         }
@@ -668,7 +666,7 @@ public final class FactionsPlayerListener extends AbstractListener {
         final InventoryView view = event.getView();
         if (rawSlot < 0 || rawSlot >= view
             .countSlots()) { // < 0 check also covers situation of InventoryView.OUTSIDE (-999)
-            return null;
+          return null;
         }
         if (rawSlot < view.getTopInventory().getSize()) {
             return view.getTopInventory();

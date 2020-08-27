@@ -45,10 +45,14 @@ public class CmdAnnounce extends FCommand {
     }
 
     /*protected class AnnounceBrigadier implements BrigadierProvider {
+=======
+    protected class AnnounceBrigadier implements BrigadierProvider {
+>>>>>>> 62ad62217034bd82b4b37635fc44cbb245ddb758
         @Override
         public ArgumentBuilder<Object, ?> get(ArgumentBuilder<Object, ?> parent) {
             return parent.then(RequiredArgumentBuilder.argument("message", StringArgumentType.greedyString()));
         }
+<<<<<<< HEAD
     }*/
 
 }

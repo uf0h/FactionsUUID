@@ -42,7 +42,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
-
 /**
  * Logged in players always have exactly one FPlayer instance. Logged out players may or may not have an FPlayer
  * instance. They will always have one if they are part of a faction. This is because only players with a faction are
@@ -65,7 +64,7 @@ public abstract class MemoryFPlayer implements FPlayer {
     protected long lastLoginTime;
     protected ChatMode chatMode;
     protected boolean ignoreAllianceChat = false;
-    protected String id;
+    protected UUID id;
     protected String name;
     protected boolean monitorJoins;
     protected boolean spyingChat = false;
@@ -90,6 +89,7 @@ public abstract class MemoryFPlayer implements FPlayer {
     protected transient boolean loginPvpDisabled;
     protected transient long lastFrostwalkerMessage;
     protected transient boolean shouldTakeFallDamage = true;
+    protected transient OfflinePlayer offlinePlayer;
 
     public void login() {
         this.kills = getPlayer().getStatistic(Statistic.PLAYER_KILLS);
@@ -260,13 +260,29 @@ public abstract class MemoryFPlayer implements FPlayer {
 
     // FIELD: account
     public String getAccountId() {
-        return this.getId();
+        return this.id.toString();
+    }
+
+    public OfflinePlayer getOfflinePlayer() {
+        if (this.offlinePlayer == null) {
+            this.offlinePlayer = Bukkit.getOfflinePlayer(this.id);
+        }
+        return this.offlinePlayer;
+    }
+
+    public void setOfflinePlayer(Player player) {
+        this.offlinePlayer = player;
     }
 
     public MemoryFPlayer() {
     }
 
+    @Deprecated
     public MemoryFPlayer(String id) {
+        this(UUID.fromString(id));
+    }
+
+    public MemoryFPlayer(UUID id) {
         this.id = id;
         this.resetFactionData(false);
         this.power = FactionsPlugin.getInstance().conf().factions().landRaidControl().power().getPlayerStarting();
@@ -397,8 +413,8 @@ public abstract class MemoryFPlayer implements FPlayer {
             // Older versions of FactionsUUID don't save the name,
             // so `name` will be null the first time it's retrieved
             // after updating
-            OfflinePlayer offline = Bukkit.getOfflinePlayer(UUID.fromString(getId()));
-            this.name = offline.getName() != null ? offline.getName() : getId();
+            OfflinePlayer offline = Bukkit.getOfflinePlayer(this.id);
+            this.name = offline.getName() != null ? offline.getName() : this.id.toString();
         }
         return name;
     }
@@ -685,7 +701,7 @@ public abstract class MemoryFPlayer implements FPlayer {
         if (myFaction.getFPlayers().size() == 1) {
             // Transfer all money
             if (Econ.shouldBeUsed()) {
-                Econ.transferMoney(this, myFaction, this, Econ.getBalance(myFaction.getAccountId()));
+                Econ.transferMoney(this, myFaction, this, Econ.getBalance(myFaction));
             }
         }
 
@@ -906,7 +922,7 @@ public abstract class MemoryFPlayer implements FPlayer {
     }
 
     public Player getPlayer() {
-        return Bukkit.getPlayer(UUID.fromString(this.getId()));
+        return Bukkit.getPlayer(this.id);
     }
 
     public boolean isOnline() {
@@ -1011,7 +1027,7 @@ public abstract class MemoryFPlayer implements FPlayer {
 
     public void setSeeingChunk(boolean seeingChunk) {
         this.seeingChunk = seeingChunk;
-        FactionsPlugin.getInstance().getSeeChunkUtil().updatePlayerInfo(UUID.fromString(getId()), seeingChunk);
+        FactionsPlugin.getInstance().getSeeChunkUtil().updatePlayerInfo(this.id, seeingChunk);
     }
 
     public boolean getFlyTrailsState() {
@@ -1095,13 +1111,25 @@ public abstract class MemoryFPlayer implements FPlayer {
         return this.getColorTo(fplayer) + this.getNameAndTitle();
     }
 
+    @Deprecated
     @Override
     public String getId() {
-        return id;
+        return id.toString();
+    }
+
+    @Deprecated
+    @Override
+    public void setId(String id) {
+        this.setUniqueId(UUID.fromString(id));
     }
 
     @Override
-    public void setId(String id) {
+    public UUID getUniqueId() {
+        return this.id;
+    }
+
+    @Override
+    public void setUniqueId(UUID id) {
         this.id = id;
     }
 

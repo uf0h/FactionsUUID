@@ -370,7 +370,6 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
         getServer().getPluginManager().registerEvents(new OneEightPlusListener(this), this);
         getServer().getPluginManager().registerEvents(new PortalListener(this), this);
 
-
         // since some other plugins execute commands directly through this command interface, provide it
         this.getCommand(refCommand).setExecutor(cmdBase);
 
@@ -397,7 +396,6 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
                 }
                 cmdBase.done();
                 // Grand metrics adventure!
-                setupMetrics();
                 getLogger().removeHandler(handler);
                 startupLog = startupBuilder.toString();
                 startupExceptionLog = startupExceptionBuilder.toString();
@@ -428,79 +426,6 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
         } catch (NumberFormatException ignored) {
             return or;
         }
-    }
-
-    private void setupMetrics() {
-        this.metrics = new Metrics(this);
-
-        // Version
-        String verString = this.getDescription().getVersion().replace("${build.number}", "selfbuilt");
-        Pattern verPattern = Pattern.compile("U([\\d.]+)-b(.*)");
-        Matcher matcher = verPattern.matcher(verString);
-        final String fuuidVersion;
-        final String fuuidBuild;
-        if (matcher.find()) {
-            fuuidVersion = matcher.group(1);
-            fuuidBuild = matcher.group(2);
-        } else {
-            fuuidVersion = "Unknown";
-            fuuidBuild = verString;
-        }
-        this.metricsDrillPie("fuuid_version", () -> {
-            Map<String, Map<String, Integer>> map = new HashMap<>();
-            Map<String, Integer> entry = new HashMap<>();
-            entry.put(fuuidBuild, 1);
-            map.put(fuuidVersion, entry);
-            return map;
-        });
-
-        // Essentials
-        Plugin ess = Essentials.getEssentials();
-        this.metricsDrillPie("essentials", () -> this.metricsPluginInfo(ess));
-        if (ess != null) {
-            this.metricsSimplePie("essentials_delete_homes", () -> "" + conf().factions().other().isDeleteEssentialsHomes());
-            this.metricsSimplePie("essentials_home_teleport", () -> "" + this.conf().factions().homes().isTeleportCommandEssentialsIntegration());
-        }
-
-        // Vault
-        Plugin vault = Bukkit.getServer().getPluginManager().getPlugin("Vault");
-        this.metricsDrillPie("vault", () -> this.metricsPluginInfo(vault));
-        if (vault != null) {
-            this.metricsDrillPie("vault_perms", () -> this.metricsInfo(perms, perms::getName));
-            this.metricsDrillPie("vault_econ", () -> {
-                Map<String, Map<String, Integer>> map = new HashMap<>();
-                Map<String, Integer> entry = new HashMap<>();
-                entry.put(Econ.getEcon() == null ? "none" : Econ.getEcon().getName(), 1);
-                map.put((this.conf().economy().isEnabled() && Econ.getEcon() != null) ? "enabled" : "disabled", entry);
-                return map;
-            });
-        }
-
-        // Clip Placeholder
-        Plugin clipPlugin = getServer().getPluginManager().getPlugin("PlaceholderAPI");
-        this.metricsDrillPie("clipplaceholder", () -> this.metricsPluginInfo(clipPlugin));
-
-        // MVdW Placeholder
-        Plugin mvdw = getServer().getPluginManager().getPlugin("MVdWPlaceholderAPI");
-        this.metricsDrillPie("mvdwplaceholder", () -> this.metricsPluginInfo(mvdw));
-
-        // Overall stats
-        this.metricsLine("factions", () -> Factions.getInstance().getAllFactions().size() - 3);
-
-        // Event listeners
-        this.metricsDrillPie("event_listeners", () -> {
-            Set<Plugin> pluginsListening = this.getPlugins(FactionEvent.getHandlerList(), FactionCreateEvent.getHandlerList(), FactionRelationEvent.getHandlerList());
-            Map<String, Map<String, Integer>> map = new HashMap<>();
-            for (Plugin plugin : pluginsListening) {
-                if (plugin.getName().equalsIgnoreCase("factions")) {
-                    continue;
-                }
-                Map<String, Integer> entry = new HashMap<>();
-                entry.put(plugin.getDescription().getVersion(), 1);
-                map.put(plugin.getName(), entry);
-            }
-            return map;
-        });
     }
 
     private Set<Plugin> getPlugins(HandlerList... handlerLists) {
@@ -538,8 +463,6 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
         map.put(plugin == null ? "absent" : "present", entry);
         return map;
     }
-
-
 
     public void loadLang() {
         File lang = new File(getDataFolder(), "lang.yml");

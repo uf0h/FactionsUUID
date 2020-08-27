@@ -83,6 +83,9 @@ public class CmdChat extends FCommand {
     }
 
     /*protected class ChatBrigadier implements BrigadierProvider {
+=======
+    protected class ChatBrigadier implements BrigadierProvider {
+>>>>>>> 62ad62217034bd82b4b37635fc44cbb245ddb758
         @Override
         public ArgumentBuilder<Object, ?> get(ArgumentBuilder<Object, ?> parent) {
             return parent.then(LiteralArgumentBuilder.literal("public"))
@@ -91,6 +94,7 @@ public class CmdChat extends FCommand {
                     .then(LiteralArgumentBuilder.literal("faction"))
                     .then(LiteralArgumentBuilder.literal("truce"));
         }
+<<<<<<< HEAD
     }*/
 
 }

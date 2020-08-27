@@ -12,12 +12,17 @@ import com.massivecraft.factions.util.DiscUtil;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.UUID;
 
 public class JSONFPlayers extends MemoryFPlayers {
     public Gson getGson() {
         return FactionsPlugin.getInstance().getGson();
     }
 
+    @Deprecated
     public void setGson(Gson gson) {
         // NOOP
     }
@@ -32,7 +37,7 @@ public class JSONFPlayers extends MemoryFPlayers {
     }
 
     public void convertFrom(MemoryFPlayers old) {
-        old.fPlayers.forEach((id, faction) -> this.fPlayers.put(id, new JSONFPlayer((MemoryFPlayer) faction)));
+        old.getAllFPlayers().forEach((player) -> this.fPlayers.put(player.getUniqueId(), new JSONFPlayer((MemoryFPlayer) player)));
         forceSave();
         FPlayers.instance = this;
     }
@@ -42,22 +47,22 @@ public class JSONFPlayers extends MemoryFPlayers {
     }
 
     public void forceSave(boolean sync) {
-        final Map<String, JSONFPlayer> entitiesThatShouldBeSaved = new HashMap<>();
+        final Map<UUID, JSONFPlayer> entitiesThatShouldBeSaved = new HashMap<>();
         for (FPlayer entity : this.fPlayers.values()) {
             if (((MemoryFPlayer) entity).shouldBeSaved()) {
-                entitiesThatShouldBeSaved.put(entity.getId(), (JSONFPlayer) entity);
+                entitiesThatShouldBeSaved.put(entity.getUniqueId(), (JSONFPlayer) entity);
             }
         }
 
         saveCore(file, entitiesThatShouldBeSaved, sync);
     }
 
-    private boolean saveCore(File target, Map<String, JSONFPlayer> data, boolean sync) {
+    private boolean saveCore(File target, Map<UUID, JSONFPlayer> data, boolean sync) {
         return DiscUtil.writeCatch(target, FactionsPlugin.getInstance().getGson().toJson(data), sync);
     }
 
     public int load() {
-        Map<String, JSONFPlayer> fplayers = this.loadCore();
+        Map<UUID, JSONFPlayer> fplayers = this.loadCore();
         if (fplayers == null) {
             return 0;
         }
@@ -66,7 +71,7 @@ public class JSONFPlayers extends MemoryFPlayers {
         return fPlayers.size();
     }
 
-    private Map<String, JSONFPlayer> loadCore() {
+    private Map<UUID, JSONFPlayer> loadCore() {
         if (!this.file.exists()) {
             return new HashMap<>();
         }
@@ -76,17 +81,36 @@ public class JSONFPlayers extends MemoryFPlayers {
             return null;
         }
 
-        Map<String, JSONFPlayer> data = FactionsPlugin.getInstance().getGson().fromJson(content, new TypeToken<Map<String, JSONFPlayer>>() {
+        Map<UUID, JSONFPlayer> data = FactionsPlugin.getInstance().getGson().fromJson(content, new TypeToken<Map<UUID, JSONFPlayer>>() {
         }.getType());
-
+        Set<String> list = new HashSet<>();
+        Set<String> invalidList = new HashSet<>();
+        for (Entry<UUID, JSONFPlayer> entry : data.entrySet()) {
+            UUID key = entry.getKey();
+            entry.getValue().setUniqueId(key);
+        }
 
         return data;
     }
 
+    private boolean doesKeyNeedMigration(String key) {
+        if (!key.matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")) {
+            // Not a valid UUID..
+            // Valid playername, we'll mark this as one for conversion
+            // to UUID
+            return key.matches("[a-zA-Z0-9_]{2,16}");
+        }
+        return false;
+    }
+
+    private boolean isKeyInvalid(String key) {
+        return !key.matches("[a-zA-Z0-9_]{2,16}");
+    }
+
     @Override
-    public FPlayer generateFPlayer(String id) {
+    public FPlayer generateFPlayer(UUID id) {
         FPlayer player = new JSONFPlayer(id);
-        this.fPlayers.put(player.getId(), player);
+        this.fPlayers.put(id, player);
         return player;
     }
 }

@@ -230,7 +230,6 @@ public abstract class AbstractListener implements Listener {
 
         final FLocation loc = new FLocation(location);
         final Faction otherFaction = Board.getInstance().getFactionAt(loc);
-
         // no door/chest/whatever protection in wilderness, war zones, or safe zones
         if (!otherFaction.isNormal()) {
             switch (material) {
@@ -376,5 +375,4 @@ public abstract class AbstractListener implements Listener {
 
         return false;
     }
-
 }
