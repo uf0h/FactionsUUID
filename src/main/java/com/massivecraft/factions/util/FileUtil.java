@@ -15,10 +15,10 @@ import com.massivecraft.factions.FactionsPlugin;
 
 public final class FileUtil {
 
-    public static Set<File> getFilesInFolder(final String path) throws FileNotFoundException {
+    public static Set<File> getFilesInFolder(final String path) {
         final File folder = new File(path);
         if (!folder.exists()) {
-            throw new FileNotFoundException(path);
+            return null;
         }
 
         final File[] filesInFolder = folder.listFiles();

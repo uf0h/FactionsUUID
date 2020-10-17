@@ -426,9 +426,9 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
 
     private void loadAddons() {
         try {
-            final Set<File> jarFiles = FileUtil.getFilesInFolder(this.getDataFolder().getPath() + "/addons");
+            final Set<File> jarFiles = FileUtil.getFilesInFolder(this.getDataFolder().getPath()  + File.separator + "addons");
 
-            if (jarFiles.isEmpty()) {
+            if (jarFiles == null || jarFiles.isEmpty()) {
                 getLogger().info("No addons loaded.");
                 return;
             }
