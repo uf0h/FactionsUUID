@@ -1,10 +1,10 @@
 package com.massivecraft.factions.perms;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import me.ufo.shaded.com.google.gson.JsonDeserializationContext;
+import me.ufo.shaded.com.google.gson.JsonDeserializer;
+import me.ufo.shaded.com.google.gson.JsonElement;
+import me.ufo.shaded.com.google.gson.JsonObject;
+import me.ufo.shaded.com.google.gson.JsonParseException;
 import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.util.TL;
 

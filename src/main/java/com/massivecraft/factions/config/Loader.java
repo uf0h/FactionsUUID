@@ -1,6 +1,7 @@
 package com.massivecraft.factions.config;
 
-import com.google.common.reflect.TypeToken;
+// wont work with  me.ufo.shaded
+// import com.google.common.reflect.TypeToken;
 import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.config.annotation.Comment;
 import com.massivecraft.factions.config.annotation.ConfigName;
@@ -10,7 +11,7 @@ import com.typesafe.config.ConfigRenderOptions;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
-import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+//import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -106,8 +107,8 @@ public class Loader {
                         try {
                             Field tokenField = field.getDeclaringClass().getDeclaredField(field.getName() + "Token");
                             tokenField.setAccessible(true);
-                            newNewNode.setValue((TypeToken<Object>) tokenField.get(object), defaultValue);
-                        } catch (ObjectMappingException | NoSuchFieldException e) {
+                            newNewNode.setValue(tokenField.get(object));
+                        } catch (/*ObjectMappingException | */NoSuchFieldException e) {
                             System.out.println("Failed horrifically to handle " + confName);
                         }
                     }

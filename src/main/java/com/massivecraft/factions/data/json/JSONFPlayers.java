@@ -1,7 +1,7 @@
 package com.massivecraft.factions.data.json;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import me.ufo.shaded.com.google.gson.Gson;
+import me.ufo.shaded.com.google.gson.reflect.TypeToken;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.FactionsPlugin;

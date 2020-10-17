@@ -1,8 +1,8 @@
 package com.massivecraft.factions;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
+import me.ufo.shaded.com.google.gson.Gson;
+import me.ufo.shaded.com.google.gson.GsonBuilder;
+import me.ufo.shaded.com.google.gson.reflect.TypeToken;
 import com.massivecraft.factions.addon.FactionsAddon;
 import com.massivecraft.factions.cmd.FCmdRoot;
 import com.massivecraft.factions.config.ConfigManager;

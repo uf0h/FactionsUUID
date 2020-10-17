@@ -1,7 +1,7 @@
 package com.massivecraft.factions.data;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import me.ufo.shaded.com.google.common.collect.HashMultimap;
+import me.ufo.shaded.com.google.common.collect.Multimap;
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.FPlayer;

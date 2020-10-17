@@ -1,9 +1,9 @@
 package com.massivecraft.factions.util;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
+import me.ufo.shaded.com.google.gson.JsonArray;
+import me.ufo.shaded.com.google.gson.JsonObject;
+import me.ufo.shaded.com.google.gson.JsonParser;
+import me.ufo.shaded.com.google.gson.JsonPrimitive;
 import com.massivecraft.factions.FactionsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;

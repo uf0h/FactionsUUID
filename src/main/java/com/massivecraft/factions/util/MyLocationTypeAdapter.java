@@ -1,12 +1,12 @@
 package com.massivecraft.factions.util;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import me.ufo.shaded.com.google.gson.JsonDeserializationContext;
+import me.ufo.shaded.com.google.gson.JsonDeserializer;
+import me.ufo.shaded.com.google.gson.JsonElement;
+import me.ufo.shaded.com.google.gson.JsonObject;
+import me.ufo.shaded.com.google.gson.JsonParseException;
+import me.ufo.shaded.com.google.gson.JsonSerializationContext;
+import me.ufo.shaded.com.google.gson.JsonSerializer;
 import com.massivecraft.factions.FactionsPlugin;
 
 import java.lang.reflect.Type;

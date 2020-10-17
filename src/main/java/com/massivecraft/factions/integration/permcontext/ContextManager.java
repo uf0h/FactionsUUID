@@ -1,8 +1,8 @@
 package com.massivecraft.factions.integration.permcontext;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
+import me.ufo.shaded.com.google.common.collect.ArrayListMultimap;
+import me.ufo.shaded.com.google.common.collect.Multimap;
+import me.ufo.shaded.com.google.common.collect.Multimaps;
 import com.massivecraft.factions.FactionsPlugin;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
