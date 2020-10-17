@@ -3,16 +3,13 @@ package com.massivecraft.factions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.massivecraft.factions.addon.FactionsAddon;
 import com.massivecraft.factions.cmd.FCmdRoot;
 import com.massivecraft.factions.config.ConfigManager;
 import com.massivecraft.factions.config.file.MainConfig;
 import com.massivecraft.factions.data.SaveTask;
-import com.massivecraft.factions.event.FactionCreateEvent;
-import com.massivecraft.factions.event.FactionEvent;
-import com.massivecraft.factions.event.FactionRelationEvent;
 import com.massivecraft.factions.integration.ClipPlaceholderAPIManager;
 import com.massivecraft.factions.integration.Econ;
-import com.massivecraft.factions.integration.Essentials;
 import com.massivecraft.factions.integration.IntegrationManager;
 import com.massivecraft.factions.integration.LuckPerms;
 import com.massivecraft.factions.integration.permcontext.ContextManager;
@@ -29,7 +26,9 @@ import com.massivecraft.factions.perms.PermissibleAction;
 import com.massivecraft.factions.perms.PermissionsMapTypeAdapter;
 import com.massivecraft.factions.struct.ChatMode;
 import com.massivecraft.factions.util.AutoLeaveTask;
+import com.massivecraft.factions.util.ClassUtil;
 import com.massivecraft.factions.util.EnumTypeAdapter;
+import com.massivecraft.factions.util.FileUtil;
 import com.massivecraft.factions.util.FlightUtil;
 import com.massivecraft.factions.util.LazyLocation;
 import com.massivecraft.factions.util.MapFLocToStringSetTypeAdapter;
@@ -416,8 +415,32 @@ public class FactionsPlugin extends JavaPlugin implements FactionsAPI {
             }
         }.runTaskTimerAsynchronously(this, 0, 20 * 60 * 10); // ten minutes
 
+
+        /* LOAD ADDONS */
+
+        this.loadAddons();
+
         getLogger().info("=== Ready to go after " + (System.currentTimeMillis() - timeEnableStart) + "ms! ===");
         this.loadSuccessful = true;
+    }
+
+    private void loadAddons() {
+        try {
+            final Set<File> jarFiles = FileUtil.getFilesInFolder(this.getDataFolder().getPath() + "/addons");
+
+            if (jarFiles.isEmpty()) {
+                getLogger().info("No addons loaded.");
+                return;
+            }
+
+            //final ClassLoader<Addon> loader = new ClassLoader<>();
+
+            for (final File jarFile : jarFiles) {
+                ClassUtil.loadClass(jarFile, FactionsAddon.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private int intOr(String in, int or) {
