@@ -5,11 +5,12 @@ import org.bukkit.OfflinePlayer;
 
 public interface EconomyParticipator extends RelationParticipator {
 
-    String getAccountId();
+  String getAccountId();
 
-    OfflinePlayer getOfflinePlayer();
+  OfflinePlayer getOfflinePlayer();
 
-    void msg(String str, Object... args);
+  void msg(String str, Object... args);
 
-    void msg(TL translation, Object... args);
+  void msg(TL translation, Object... args);
+
 }

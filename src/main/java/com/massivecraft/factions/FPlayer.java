@@ -13,276 +13,281 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Logged in players always have exactly one FPlayer instance. Logged out players may or may not have an FPlayer
- * instance. They will always have one if they are part of a faction. This is because only players with a faction are
+ * Logged in players always have exactly one FPlayer instance. Logged out players may or may not have an
+ * FPlayer
+ * instance. They will always have one if they are part of a faction. This is because only players with a
+ * faction are
  * saved to disk (in order to not waste disk space).
  * <p/>
  * The FPlayer is linked to a minecraft player using the player name.
  * <p/>
- * The same instance is always returned for the same player. This means you can use the == operator. No .equals method
+ * The same instance is always returned for the same player. This means you can use the == operator. No
+ * .equals method
  * necessary.
  */
 
 public interface FPlayer extends EconomyParticipator {
-    void login();
 
-    void logout();
+  void login();
 
-    Faction getFaction();
+  void logout();
 
-    String getFactionId();
+  Faction getFaction();
 
-    boolean hasFaction();
+  void setFaction(Faction faction);
 
-    void setFaction(Faction faction);
+  String getFactionId();
 
-    boolean willAutoLeave();
+  boolean hasFaction();
 
-    void setAutoLeave(boolean autoLeave);
+  boolean willAutoLeave();
 
-    long getLastFrostwalkerMessage();
+  void setAutoLeave(boolean autoLeave);
 
-    void setLastFrostwalkerMessage();
+  long getLastFrostwalkerMessage();
 
-    void setMonitorJoins(boolean monitor);
+  void setLastFrostwalkerMessage();
 
-    boolean isMonitoringJoins();
+  void setMonitorJoins(boolean monitor);
 
-    Role getRole();
+  boolean isMonitoringJoins();
 
-    void setRole(Role role);
+  Role getRole();
 
-    boolean shouldTakeFallDamage();
+  void setRole(Role role);
 
-    void setTakeFallDamage(boolean fallDamage);
+  boolean shouldTakeFallDamage();
 
-    double getPowerBoost();
+  void setTakeFallDamage(boolean fallDamage);
 
-    void setPowerBoost(double powerBoost);
+  double getPowerBoost();
 
-    Faction getAutoClaimFor();
+  void setPowerBoost(double powerBoost);
 
-    void setAutoClaimFor(Faction faction);
+  Faction getAutoClaimFor();
 
-    boolean isAutoSafeClaimEnabled();
+  void setAutoClaimFor(Faction faction);
 
-    void setIsAutoSafeClaimEnabled(boolean enabled);
+  boolean isAutoSafeClaimEnabled();
 
-    boolean isAutoWarClaimEnabled();
+  void setIsAutoSafeClaimEnabled(boolean enabled);
 
-    void setIsAutoWarClaimEnabled(boolean enabled);
+  boolean isAutoWarClaimEnabled();
 
-    boolean isAdminBypassing();
+  void setIsAutoWarClaimEnabled(boolean enabled);
 
-    boolean isVanished();
+  boolean isAdminBypassing();
 
-    void setIsAdminBypassing(boolean val);
+  boolean isVanished();
 
-    void setChatMode(ChatMode chatMode);
+  void setIsAdminBypassing(boolean val);
 
-    ChatMode getChatMode();
+  ChatMode getChatMode();
 
-    void setIgnoreAllianceChat(boolean ignore);
+  void setChatMode(ChatMode chatMode);
 
-    boolean isIgnoreAllianceChat();
+  boolean isIgnoreAllianceChat();
 
-    void setSpyingChat(boolean chatSpying);
+  void setIgnoreAllianceChat(boolean ignore);
 
-    boolean isSpyingChat();
+  boolean isSpyingChat();
 
-    void resetFactionData(boolean doSpoutUpdate);
+  void setSpyingChat(boolean chatSpying);
 
-    void resetFactionData();
+  void resetFactionData(boolean doSpoutUpdate);
 
-    long getLastLoginTime();
+  void resetFactionData();
 
-    void setLastLoginTime(long lastLoginTime);
+  long getLastLoginTime();
 
-    boolean isMapAutoUpdating();
+  void setLastLoginTime(long lastLoginTime);
 
-    void setMapAutoUpdating(boolean mapAutoUpdating);
+  boolean isMapAutoUpdating();
 
-    boolean hasLoginPvpDisabled();
+  void setMapAutoUpdating(boolean mapAutoUpdating);
 
-    FLocation getLastStoodAt();
+  boolean hasLoginPvpDisabled();
 
-    void setLastStoodAt(FLocation flocation);
+  FLocation getLastStoodAt();
 
-    String getTitle();
+  void setLastStoodAt(FLocation flocation);
 
-    void setTitle(CommandSender sender, String title);
+  String getTitle();
 
-    String getName();
+  void setTitle(CommandSender sender, String title);
 
-    String getTag();
+  String getName();
 
-    // Base concatenations:
+  String getTag();
 
-    String getNameAndSomething(String something);
+  // Base concatenations:
 
-    String getNameAndTitle();
+  String getNameAndSomething(String something);
 
-    String getNameAndTag();
+  String getNameAndTitle();
 
-    // Colored concatenations:
-    // These are used in information messages
+  String getNameAndTag();
 
-    String getNameAndTitle(Faction faction);
+  // Colored concatenations:
+  // These are used in information messages
 
-    String getNameAndTitle(FPlayer fplayer);
+  String getNameAndTitle(Faction faction);
 
-    // Chat Tag:
-    // These are injected into the format of global chat messages.
+  String getNameAndTitle(FPlayer fplayer);
 
-    String getChatTag();
+  // Chat Tag:
+  // These are injected into the format of global chat messages.
 
-    // Colored Chat Tag
-    String getChatTag(Faction faction);
+  String getChatTag();
 
-    String getChatTag(FPlayer fplayer);
+  // Colored Chat Tag
+  String getChatTag(Faction faction);
 
-    int getKills();
+  String getChatTag(FPlayer fplayer);
 
-    int getDeaths();
+  int getKills();
 
+  int getDeaths();
 
-    // -------------------------------
-    // Relation and relation colors
-    // -------------------------------
 
-    Relation getRelationToLocation();
+  // -------------------------------
+  // Relation and relation colors
+  // -------------------------------
 
-    //----------------------------------------------//
-    // Health
-    //----------------------------------------------//
-    void heal(int amnt);
+  Relation getRelationToLocation();
 
+  //----------------------------------------------//
+  // Health
+  //----------------------------------------------//
+  void heal(int amnt);
 
-    //----------------------------------------------//
-    // Power
-    //----------------------------------------------//
-    double getPower();
 
-    void alterPower(double delta);
+  //----------------------------------------------//
+  // Power
+  //----------------------------------------------//
+  double getPower();
 
-    double getPowerMax();
+  void alterPower(double delta);
 
-    double getPowerMin();
+  double getPowerMax();
 
-    int getPowerRounded();
+  double getPowerMin();
 
-    int getPowerMaxRounded();
+  int getPowerRounded();
 
-    int getPowerMinRounded();
+  int getPowerMaxRounded();
 
-    void updatePower();
+  int getPowerMinRounded();
 
-    void losePowerFromBeingOffline();
+  void updatePower();
 
-    void onDeath();
+  void losePowerFromBeingOffline();
 
-    //----------------------------------------------//
-    // Territory
-    //----------------------------------------------//
-    boolean isInOwnTerritory();
+  void onDeath();
 
-    boolean isInOthersTerritory();
+  //----------------------------------------------//
+  // Territory
+  //----------------------------------------------//
+  boolean isInOwnTerritory();
 
-    boolean isInAllyTerritory();
+  boolean isInOthersTerritory();
 
-    boolean isInNeutralTerritory();
+  boolean isInAllyTerritory();
 
-    boolean isInEnemyTerritory();
+  boolean isInNeutralTerritory();
 
-    void sendFactionHereMessage(Faction from);
+  boolean isInEnemyTerritory();
 
-    // -------------------------------
-    // Actions
-    // -------------------------------
+  void sendFactionHereMessage(Faction from);
 
-    void leave(boolean makePay);
+  // -------------------------------
+  // Actions
+  // -------------------------------
 
-    boolean canClaimForFaction(Faction forFaction);
+  void leave(boolean makePay);
 
-    boolean canClaimForFactionAtLocation(Faction forFaction, Location location, boolean notifyFailure);
+  boolean canClaimForFaction(Faction forFaction);
 
-    boolean canClaimForFactionAtLocation(Faction forFaction, FLocation location, boolean notifyFailure);
+  boolean canClaimForFactionAtLocation(Faction forFaction, Location location, boolean notifyFailure);
 
-    boolean attemptClaim(Faction forFaction, Location location, boolean notifyFailure);
+  boolean canClaimForFactionAtLocation(Faction forFaction, FLocation location, boolean notifyFailure);
 
-    boolean attemptClaim(Faction forFaction, FLocation location, boolean notifyFailure);
+  boolean attemptClaim(Faction forFaction, Location location, boolean notifyFailure);
 
-    @Deprecated
-    String getId();
+  boolean attemptClaim(Faction forFaction, FLocation location, boolean notifyFailure);
 
-    @Deprecated
-    void setId(String id);
+  @Deprecated
+  String getId();
 
-    UUID getUniqueId();
+  @Deprecated
+  void setId(String id);
 
-    void setUniqueId(UUID id);
+  UUID getUniqueId();
 
-    Player getPlayer();
+  void setUniqueId(UUID id);
 
-    boolean isOnline();
+  Player getPlayer();
 
-    void sendMessage(String message);
+  boolean isOnline();
 
-    void sendMessage(List<String> messages);
+  void sendMessage(String message);
 
-    void sendFancyMessage(FancyMessage message);
+  void sendMessage(List<String> messages);
 
-    void sendFancyMessage(List<FancyMessage> message);
+  void sendFancyMessage(FancyMessage message);
 
-    int getMapHeight();
+  void sendFancyMessage(List<FancyMessage> message);
 
-    void setMapHeight(int height);
+  int getMapHeight();
 
-    boolean isOnlineAndVisibleTo(Player me);
+  void setMapHeight(int height);
 
-    void remove();
+  boolean isOnlineAndVisibleTo(Player me);
 
-    boolean isOffline();
+  void remove();
 
-    boolean isFlying();
+  boolean isOffline();
 
-    void setFlying(boolean fly);
+  boolean isFlying();
 
-    void setFlying(boolean fly, boolean damage);
+  void setFlying(boolean fly);
 
-    boolean isAutoFlying();
+  void setFlying(boolean fly, boolean damage);
 
-    void setAutoFlying(boolean autoFly);
+  boolean isAutoFlying();
 
-    boolean canFlyAtLocation();
+  void setAutoFlying(boolean autoFly);
 
-    boolean canFlyAtLocation(FLocation location);
+  boolean canFlyAtLocation();
 
-    boolean isSeeingChunk();
+  boolean canFlyAtLocation(FLocation location);
 
-    void setSeeingChunk(boolean seeingChunk);
+  boolean isSeeingChunk();
 
-    boolean getFlyTrailsState();
+  void setSeeingChunk(boolean seeingChunk);
 
-    void setFlyTrailsState(boolean state);
+  boolean getFlyTrailsState();
 
-    String getFlyTrailsEffect();
+  void setFlyTrailsState(boolean state);
 
-    void setFlyTrailsEffect(String effect);
+  String getFlyTrailsEffect();
 
-    // -------------------------------
-    // Warmups
-    // -------------------------------
+  void setFlyTrailsEffect(String effect);
 
-    boolean isWarmingUp();
+  // -------------------------------
+  // Warmups
+  // -------------------------------
 
-    WarmUpUtil.Warmup getWarmupType();
+  boolean isWarmingUp();
 
-    void addWarmup(WarmUpUtil.Warmup warmup, int taskId);
+  WarmUpUtil.Warmup getWarmupType();
 
-    void stopWarmup();
+  void addWarmup(WarmUpUtil.Warmup warmup, int taskId);
 
-    void clearWarmup();
+  void stopWarmup();
 
-    void setOfflinePlayer(Player player);
+  void clearWarmup();
+
+  void setOfflinePlayer(Player player);
+
 }

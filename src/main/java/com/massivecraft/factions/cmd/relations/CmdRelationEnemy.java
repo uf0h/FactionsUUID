@@ -4,7 +4,8 @@ import com.massivecraft.factions.perms.Relation;
 
 public class CmdRelationEnemy extends FRelationCommand {
 
-    public CmdRelationEnemy() {
-        super(Relation.ENEMY, "enemy");
-    }
+  public CmdRelationEnemy() {
+    super(Relation.ENEMY, "enemy");
+  }
+
 }

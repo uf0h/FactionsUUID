@@ -1,51 +1,53 @@
 package com.massivecraft.factions.config;
 
+import java.io.IOException;
+import java.util.logging.Level;
 import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.config.file.DefaultOfflinePermissionsConfig;
 import com.massivecraft.factions.config.file.DefaultPermissionsConfig;
 import com.massivecraft.factions.config.file.MainConfig;
 
-import java.io.IOException;
-import java.util.logging.Level;
-
 public class ConfigManager {
-    private final FactionsPlugin plugin;
-    private final DefaultPermissionsConfig permissionsConfig = new DefaultPermissionsConfig();
-    private final DefaultOfflinePermissionsConfig offlinePermissionsConfig = new DefaultOfflinePermissionsConfig();
-    private final MainConfig mainConfig = new MainConfig();
 
-    public ConfigManager(FactionsPlugin plugin) {
-        this.plugin = plugin;
-    }
+  private final FactionsPlugin plugin;
+  private final DefaultPermissionsConfig permissionsConfig = new DefaultPermissionsConfig();
+  private final DefaultOfflinePermissionsConfig offlinePermissionsConfig =
+    new DefaultOfflinePermissionsConfig();
+  private final MainConfig mainConfig = new MainConfig();
 
-    public void startup() {
-        this.loadConfigs();
-    }
+  public ConfigManager(FactionsPlugin plugin) {
+    this.plugin = plugin;
+  }
 
-    public void loadConfigs() {
-        this.loadConfig("default_permissions", this.permissionsConfig);
-        this.loadConfig("default_permissions_offline", this.offlinePermissionsConfig);
-        this.loadConfig("main", this.mainConfig);
-    }
+  public void startup() {
+    this.loadConfigs();
+  }
 
-    private void loadConfig(String name, Object config) {
-        try {
-            Loader.loadAndSave(name, config);
-        } catch (IOException | IllegalAccessException e) {
-            FactionsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not load config '" + name + ".conf'", e);
-        }
-    }
+  public void loadConfigs() {
+    this.loadConfig("default_permissions", this.permissionsConfig);
+    this.loadConfig("default_permissions_offline", this.offlinePermissionsConfig);
+    this.loadConfig("main", this.mainConfig);
+  }
 
-    public DefaultPermissionsConfig getPermissionsConfig() {
-        return this.permissionsConfig;
+  private void loadConfig(String name, Object config) {
+    try {
+      Loader.loadAndSave(name, config);
+    } catch (IOException | IllegalAccessException e) {
+      FactionsPlugin.getInstance().getLogger()
+        .log(Level.SEVERE, "Could not load config '" + name + ".conf'", e);
     }
+  }
 
-    public DefaultOfflinePermissionsConfig getOfflinePermissionsConfig() {
-        return this.offlinePermissionsConfig;
-    }
+  public DefaultPermissionsConfig getPermissionsConfig() {
+    return this.permissionsConfig;
+  }
 
-    public MainConfig getMainConfig() {
-        return this.mainConfig;
-    }
+  public DefaultOfflinePermissionsConfig getOfflinePermissionsConfig() {
+    return this.offlinePermissionsConfig;
+  }
+
+  public MainConfig getMainConfig() {
+    return this.mainConfig;
+  }
 
 }

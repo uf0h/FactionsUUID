@@ -12,38 +12,38 @@ import org.bukkit.event.HandlerList;
  */
 public class FactionCreateEvent extends Event {
 
-    private static final HandlerList handlers = new HandlerList();
+  private static final HandlerList handlers = new HandlerList();
 
-    private final String factionTag;
-    private final Player sender;
-    private final Faction faction;
+  private final String factionTag;
+  private final Player sender;
+  private final Faction faction;
 
-    public FactionCreateEvent(Player sender, String tag, Faction faction) {
-        this.factionTag = tag;
-        this.sender = sender;
-        this.faction = faction;
-    }
+  public FactionCreateEvent(Player sender, String tag, Faction faction) {
+    this.factionTag = tag;
+    this.sender = sender;
+    this.faction = faction;
+  }
 
-    public FPlayer getFPlayer() {
-        return FPlayers.getInstance().getByPlayer(sender);
-    }
+  public FPlayer getFPlayer() {
+    return FPlayers.getInstance().getByPlayer(sender);
+  }
 
-    @Deprecated
-    public String getFactionTag() {
-        return factionTag;
-    }
+  @Deprecated
+  public String getFactionTag() {
+    return factionTag;
+  }
 
-    public Faction getFaction() {
-        return this.faction;
-    }
+  public Faction getFaction() {
+    return this.faction;
+  }
 
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
+  @Override
+  public HandlerList getHandlers() {
+    return handlers;
+  }
 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+  public static HandlerList getHandlerList() {
+    return handlers;
+  }
 
 }

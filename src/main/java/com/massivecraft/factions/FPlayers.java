@@ -1,44 +1,45 @@
 package com.massivecraft.factions;
 
+import java.util.Collection;
+import java.util.UUID;
 import com.massivecraft.factions.data.json.JSONFPlayers;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
-import java.util.UUID;
-
 public abstract class FPlayers {
-    protected static FPlayers instance = getFPlayersImpl();
 
-    public abstract void clean();
+  protected static FPlayers instance = getFPlayersImpl();
 
-    public static FPlayers getInstance() {
-        return instance;
-    }
+  public abstract void clean();
 
-    private static FPlayers getFPlayersImpl() {
-        // TODO switch on configuration backend
-        return new JSONFPlayers();
-    }
+  public abstract Collection<FPlayer> getOnlinePlayers();
 
-    public abstract Collection<FPlayer> getOnlinePlayers();
+  public abstract FPlayer getByPlayer(Player player);
 
-    public abstract FPlayer getByPlayer(Player player);
+  public abstract Collection<FPlayer> getAllFPlayers();
 
-    public abstract Collection<FPlayer> getAllFPlayers();
+  public abstract void forceSave();
 
-    public abstract void forceSave();
+  public abstract void forceSave(boolean sync);
 
-    public abstract void forceSave(boolean sync);
+  public abstract FPlayer getByOfflinePlayer(OfflinePlayer player);
 
-    public abstract FPlayer getByOfflinePlayer(OfflinePlayer player);
+  @Deprecated
+  public abstract FPlayer getById(String string);
 
-    @Deprecated
-    public abstract FPlayer getById(String string);
+  public abstract FPlayer getById(UUID uuid);
 
-    public abstract FPlayer getById(UUID uuid);
+  public abstract int load();
 
-    public abstract int load();
+  public abstract void remove(FPlayer player);
 
-    public abstract void remove(FPlayer player);
+  public static FPlayers getInstance() {
+    return instance;
+  }
+
+  private static FPlayers getFPlayersImpl() {
+    // TODO switch on configuration backend
+    return new JSONFPlayers();
+  }
+
 }

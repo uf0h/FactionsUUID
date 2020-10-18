@@ -1,39 +1,40 @@
 package com.massivecraft.factions;
 
+import java.util.Set;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Set;
-
 public interface FactionsAPI {
-    /**
-     * Gets the current API version.
-     *
-     * @return current API version
-     * @since API 5
-     */
-    default int getAPIVersion() {
-        return 5;
-    }
 
-    boolean isAnotherPluginHandlingChat();
+  /**
+   * Gets the current API version.
+   *
+   * @return current API version
+   * @since API 5
+   */
+  default int getAPIVersion() {
+    return 5;
+  }
 
-    void setHandlingChat(Plugin plugin, boolean handling);
+  boolean isAnotherPluginHandlingChat();
 
-    boolean shouldLetFactionsHandleThisChat(AsyncPlayerChatEvent event);
+  void setHandlingChat(Plugin plugin, boolean handling);
 
-    boolean isPlayerFactionChatting(Player player);
+  boolean shouldLetFactionsHandleThisChat(AsyncPlayerChatEvent event);
 
-    String getPlayerFactionTag(Player player);
+  boolean isPlayerFactionChatting(Player player);
 
-    String getPlayerFactionTagRelation(Player speaker, Player listener);
+  String getPlayerFactionTag(Player player);
 
-    String getPlayerTitle(Player player);
+  String getPlayerFactionTagRelation(Player speaker, Player listener);
 
-    Set<String> getFactionTags();
+  String getPlayerTitle(Player player);
 
-    Set<String> getPlayersInFaction(String factionTag);
+  Set<String> getFactionTags();
 
-    Set<String> getOnlinePlayersInFaction(String factionTag);
+  Set<String> getPlayersInFaction(String factionTag);
+
+  Set<String> getOnlinePlayersInFaction(String factionTag);
+
 }

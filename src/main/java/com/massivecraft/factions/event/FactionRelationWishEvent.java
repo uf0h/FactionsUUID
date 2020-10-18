@@ -6,39 +6,42 @@ import com.massivecraft.factions.perms.Relation;
 import org.bukkit.event.Cancellable;
 
 public class FactionRelationWishEvent extends FactionPlayerEvent implements Cancellable {
-    private final Faction targetFaction;
-    private final Relation currentRelation;
-    private final Relation targetRelation;
 
-    private boolean cancelled;
+  private final Faction targetFaction;
+  private final Relation currentRelation;
+  private final Relation targetRelation;
 
-    public FactionRelationWishEvent(FPlayer caller, Faction sender, Faction targetFaction, Relation currentRelation, Relation targetRelation) {
-        super(sender, caller);
+  private boolean cancelled;
 
-        this.targetFaction = targetFaction;
-        this.currentRelation = currentRelation;
-        this.targetRelation = targetRelation;
-    }
+  public FactionRelationWishEvent(FPlayer caller, Faction sender, Faction targetFaction,
+                                  Relation currentRelation, Relation targetRelation) {
+    super(sender, caller);
 
-    public Faction getTargetFaction() {
-        return targetFaction;
-    }
+    this.targetFaction = targetFaction;
+    this.currentRelation = currentRelation;
+    this.targetRelation = targetRelation;
+  }
 
-    public Relation getCurrentRelation() {
-        return currentRelation;
-    }
+  public Faction getTargetFaction() {
+    return targetFaction;
+  }
 
-    public Relation getTargetRelation() {
-        return targetRelation;
-    }
+  public Relation getCurrentRelation() {
+    return currentRelation;
+  }
 
-    @Override
-    public boolean isCancelled() {
-        return cancelled;
-    }
+  public Relation getTargetRelation() {
+    return targetRelation;
+  }
 
-    @Override
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
-    }
+  @Override
+  public boolean isCancelled() {
+    return cancelled;
+  }
+
+  @Override
+  public void setCancelled(boolean cancelled) {
+    this.cancelled = cancelled;
+  }
+
 }

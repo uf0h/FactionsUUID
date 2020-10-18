@@ -9,30 +9,32 @@ import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.util.TL;
 
 public class CmdTNT extends FCommand {
-    private final CmdTNTInfo infoCmd;
 
-    public CmdTNT() {
-        super();
-        this.aliases.add("tnt");
-        this.aliases.add("trinitrotoluene");
+  private final CmdTNTInfo infoCmd;
 
-        this.addSubCommand(this.infoCmd = new CmdTNTInfo());
-        this.addSubCommand(new CmdTNTFill());
-        this.addSubCommand(new CmdTNTDeposit());
-        this.addSubCommand(new CmdTNTWithdraw());
-        this.addSubCommand(new CmdTNTSiphon());
+  public CmdTNT() {
+    super();
+    this.aliases.add("tnt");
+    this.aliases.add("trinitrotoluene");
 
-        this.requirements = new CommandRequirements.Builder(Permission.TNT_INFO).memberOnly().build();
-    }
+    this.addSubCommand(this.infoCmd = new CmdTNTInfo());
+    this.addSubCommand(new CmdTNTFill());
+    this.addSubCommand(new CmdTNTDeposit());
+    this.addSubCommand(new CmdTNTWithdraw());
+    this.addSubCommand(new CmdTNTSiphon());
 
-    @Override
-    public void perform(CommandContext context) {
-        context.commandChain.add(this);
-        this.infoCmd.execute(context);
-    }
+    this.requirements = new CommandRequirements.Builder(Permission.TNT_INFO).memberOnly().build();
+  }
 
-    @Override
-    public TL getUsageTranslation() {
-        return TL.COMMAND_TNT_INFO_DESCRIPTION;
-    }
+  @Override
+  public void perform(CommandContext context) {
+    context.commandChain.add(this);
+    this.infoCmd.execute(context);
+  }
+
+  @Override
+  public TL getUsageTranslation() {
+    return TL.COMMAND_TNT_INFO_DESCRIPTION;
+  }
+
 }

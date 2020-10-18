@@ -1,12 +1,5 @@
 package com.massivecraft.factions.data.json;
 
-import me.ufo.shaded.com.google.gson.reflect.TypeToken;
-import com.massivecraft.factions.Board;
-import com.massivecraft.factions.FLocation;
-import com.massivecraft.factions.FactionsPlugin;
-import com.massivecraft.factions.data.MemoryBoard;
-import com.massivecraft.factions.util.DiscUtil;
-
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -14,87 +7,97 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.logging.Level;
+import com.massivecraft.factions.Board;
+import com.massivecraft.factions.FLocation;
+import com.massivecraft.factions.FactionsPlugin;
+import com.massivecraft.factions.data.MemoryBoard;
+import com.massivecraft.factions.util.DiscUtil;
+import me.ufo.shaded.com.google.gson.reflect.TypeToken;
 
 
 public class JSONBoard extends MemoryBoard {
-    private static final transient File file = new File(FactionsPlugin.getInstance().getDataFolder(), "data/board.json");
 
-    // -------------------------------------------- //
-    // Persistance
-    // -------------------------------------------- //
+  private static final transient File file =
+    new File(FactionsPlugin.getInstance().getDataFolder(), "data/board.json");
 
-    public Map<String, Map<String, String>> dumpAsSaveFormat() {
-        Map<String, Map<String, String>> worldCoordIds = new HashMap<>();
+  // -------------------------------------------- //
+  // Persistance
+  // -------------------------------------------- //
 
-        String worldName, coords;
-        String id;
+  public Map<String, Map<String, String>> dumpAsSaveFormat() {
+    Map<String, Map<String, String>> worldCoordIds = new HashMap<>();
 
-        for (Entry<FLocation, String> entry : flocationIds.entrySet()) {
-            worldName = entry.getKey().getWorldName();
-            coords = entry.getKey().getCoordString();
-            id = entry.getValue();
-            if (!worldCoordIds.containsKey(worldName)) {
-                worldCoordIds.put(worldName, new TreeMap<>());
-            }
+    String worldName, coords;
+    String id;
 
-            worldCoordIds.get(worldName).put(coords, id);
-        }
+    for (Entry<FLocation, String> entry : flocationIds.entrySet()) {
+      worldName = entry.getKey().getWorldName();
+      coords = entry.getKey().getCoordString();
+      id = entry.getValue();
+      if (!worldCoordIds.containsKey(worldName)) {
+        worldCoordIds.put(worldName, new TreeMap<>());
+      }
 
-        return worldCoordIds;
+      worldCoordIds.get(worldName).put(coords, id);
     }
 
-    public void loadFromSaveFormat(Map<String, Map<String, String>> worldCoordIds) {
-        flocationIds.clear();
+    return worldCoordIds;
+  }
 
-        String worldName;
-        String[] coords;
-        int x, z;
-        String factionId;
+  public void loadFromSaveFormat(Map<String, Map<String, String>> worldCoordIds) {
+    flocationIds.clear();
 
-        for (Entry<String, Map<String, String>> entry : worldCoordIds.entrySet()) {
-            worldName = entry.getKey();
-            for (Entry<String, String> entry2 : entry.getValue().entrySet()) {
-                coords = entry2.getKey().trim().split("[,\\s]+");
-                x = Integer.parseInt(coords[0]);
-                z = Integer.parseInt(coords[1]);
-                factionId = entry2.getValue();
-                flocationIds.put(new FLocation(worldName, x, z), factionId);
-            }
-        }
+    String worldName;
+    String[] coords;
+    int x, z;
+    String factionId;
+
+    for (Entry<String, Map<String, String>> entry : worldCoordIds.entrySet()) {
+      worldName = entry.getKey();
+      for (Entry<String, String> entry2 : entry.getValue().entrySet()) {
+        coords = entry2.getKey().trim().split("[,\\s]+");
+        x = Integer.parseInt(coords[0]);
+        z = Integer.parseInt(coords[1]);
+        factionId = entry2.getValue();
+        flocationIds.put(new FLocation(worldName, x, z), factionId);
+      }
+    }
+  }
+
+  public void forceSave() {
+    forceSave(true);
+  }
+
+  public void forceSave(boolean sync) {
+    DiscUtil.writeCatch(file, FactionsPlugin.getInstance().getGson().toJson(dumpAsSaveFormat()), sync);
+  }
+
+  public int load() {
+    if (!file.exists()) {
+      FactionsPlugin.getInstance().getLogger().info("No board to load from disk. Creating new file.");
+      forceSave();
+      return 0;
     }
 
-    public void forceSave() {
-        forceSave(true);
+    try {
+      Type type = new TypeToken<Map<String, Map<String, String>>>() {
+      }.getType();
+      Map<String, Map<String, String>> worldCoordIds =
+        FactionsPlugin.getInstance().getGson().fromJson(DiscUtil.read(file), type);
+      loadFromSaveFormat(worldCoordIds);
+    } catch (Exception e) {
+      FactionsPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to load the board from disk.", e);
+      return 0;
     }
 
-    public void forceSave(boolean sync) {
-        DiscUtil.writeCatch(file, FactionsPlugin.getInstance().getGson().toJson(dumpAsSaveFormat()), sync);
-    }
+    return flocationIds.size();
+  }
 
-    public int load() {
-        if (!file.exists()) {
-            FactionsPlugin.getInstance().getLogger().info("No board to load from disk. Creating new file.");
-            forceSave();
-            return 0;
-        }
+  @Override
+  public void convertFrom(MemoryBoard old) {
+    this.flocationIds = old.flocationIds;
+    forceSave();
+    Board.instance = this;
+  }
 
-        try {
-            Type type = new TypeToken<Map<String, Map<String, String>>>() {
-            }.getType();
-            Map<String, Map<String, String>> worldCoordIds = FactionsPlugin.getInstance().getGson().fromJson(DiscUtil.read(file), type);
-            loadFromSaveFormat(worldCoordIds);
-        } catch (Exception e) {
-            FactionsPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to load the board from disk.", e);
-            return 0;
-        }
-
-        return flocationIds.size();
-    }
-
-    @Override
-    public void convertFrom(MemoryBoard old) {
-        this.flocationIds = old.flocationIds;
-        forceSave();
-        Board.instance = this;
-    }
 }

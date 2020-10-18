@@ -12,61 +12,64 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public abstract class FactionsAddon {
 
-    private final static Set<FactionsAddon> ADDONS = new HashSet<>();
+  private final static Set<FactionsAddon> ADDONS = new HashSet<>();
 
-    private final Object instance;
-    private final String name;
-    private YamlConfiguration config;
+  private final Object instance;
+  private final String name;
+  private YamlConfiguration config;
 
-    public FactionsAddon(final Object instance, final String name) {
-        this.instance = instance;
-        this.name = name;
+  public FactionsAddon(final Object instance, final String name) {
+    this.instance = instance;
+    this.name = name;
 
-        try {
-            this.onEnable();
-        } catch (final Throwable ex) {
-            FactionsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error occurred while enabling " + name + " addon.", ex);
-        }
-
-        ADDONS.add(this);
+    try {
+      this.onEnable();
+    } catch (final Throwable ex) {
+      FactionsPlugin.getInstance().getLogger()
+        .log(Level.SEVERE, "Error occurred while enabling " + name + " addon.", ex);
     }
 
-    public void onEnable() {}
+    ADDONS.add(this);
+  }
 
-    public void onDisable() {}
+  public void onEnable() {
+  }
 
-    public void disableAddon() {
-        this.onDisable();
-        this.config = null;
-        ADDONS.remove(this);
+  public void onDisable() {
+  }
+
+  public void disableAddon() {
+    this.onDisable();
+    this.config = null;
+    ADDONS.remove(this);
+  }
+
+  public void saveDefaultConfig() {
+    final File dir = new File(FactionsPlugin.getInstance().getDataFolder().getPath() + "/addons/" + name);
+    if (!dir.exists()) {
+      dir.mkdir();
     }
 
-    public void saveDefaultConfig() {
-        final File dir = new File(FactionsPlugin.getInstance().getDataFolder().getPath() + "/addons/" + name);
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
+    FileUtil.saveResource(this.getClass().getClassLoader(), dir.getPath(), "config.yml", false);
 
-        FileUtil.saveResource(this.getClass().getClassLoader(), dir.getPath(), "config.yml", false);
-
-        this.config = new YamlConfiguration();
-        try {
-            this.config.load(dir.getPath() + "/config.yml");
-        } catch (final IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
+    this.config = new YamlConfiguration();
+    try {
+      this.config.load(dir.getPath() + "/config.yml");
+    } catch (final IOException | InvalidConfigurationException e) {
+      e.printStackTrace();
     }
+  }
 
-    public Object getInstance() {
-        return instance;
-    }
+  public Object getInstance() {
+    return instance;
+  }
 
-    public YamlConfiguration getConfig() {
-        return config;
-    }
+  public YamlConfiguration getConfig() {
+    return config;
+  }
 
-    public static Set<FactionsAddon> getAddons() {
-        return ADDONS;
-    }
+  public static Set<FactionsAddon> getAddons() {
+    return ADDONS;
+  }
 
 }
